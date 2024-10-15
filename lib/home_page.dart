@@ -53,7 +53,7 @@ class UserProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var userManager = Provider.of<LocalUserManager>(context, listen: true);
-    var user = userManager.user;
+    var user = userManager.user!;
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -66,6 +66,13 @@ class UserProfile extends StatelessWidget {
           Text(user.name),
           SizedBox(height: 5),
           Text('Edit Profile', style: TextStyle(color: Colors.blue)),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(onPressed: (){
+              userManager.user = null;
+              Navigator.pop(context);
+            }, child: Text("Logout")),
+          )
         ],
       ),
     );
@@ -106,7 +113,7 @@ class _MainFeedState extends State<MainFeed> {
   Widget build(BuildContext context) {
     final LocalIdeasManager ideasManager = Provider.of<LocalIdeasManager>(context, listen: true);
     final LocalUserManager userManager = Provider.of<LocalUserManager>(context,  listen: true);
-    final user = userManager.user;
+    final user = userManager.user!;
     var futureIdeas = ideasManager.getIdeas(user.tags);
     return FutureBuilder<List<Idea>>(
         future: futureIdeas,

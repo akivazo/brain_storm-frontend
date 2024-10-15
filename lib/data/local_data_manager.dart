@@ -5,7 +5,7 @@ import 'package:flutter/material.dart' hide Feedback;
 import 'data_models.dart';
 
 class LocalUserManager extends ChangeNotifier {
-  late User user;
+  late User? user;
 
   void setUser(User user){
     this.user = user;
@@ -51,4 +51,26 @@ class LocalFeedbackManager extends ChangeNotifier {
     return _dataFetcher.fetchIdeaFeedbacks(idea.id);
   }
 
+}
+
+class LocalTagsManager extends ChangeNotifier {
+  final _dataFetcher = DataFetcher();
+  final _dataCreator = DataCreator();
+  late Future<List<Tag>> tags;
+
+  LocalTagsManager(){
+    tags = _dataFetcher.fetchTags();
+  }
+
+  Future<List<Tag>> fetchTags() async {
+    return tags;
+  }
+
+  Future<void> createTag(String tag) async {
+    _dataCreator.createTag(tag);
+    tags = tags.then((tags)  {
+      tags.add(Tag(name: tag));
+      return tags;
+    });
+  }
 }

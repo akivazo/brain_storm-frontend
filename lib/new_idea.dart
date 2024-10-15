@@ -60,6 +60,7 @@ class TagsField extends StatelessWidget {
   }
 }
 
+
 class NewIdeaForm extends StatefulWidget {
   @override
   _NewIdeaFormState createState() => _NewIdeaFormState();
@@ -71,10 +72,29 @@ class _NewIdeaFormState extends State<NewIdeaForm> {
   final _detailsController = TextEditingController();
   final _tagsController = TextEditingController();
 
-  @override
-  Widget build(BuildContext context) {
+  void _create(){
     var ideaManager = Provider.of<LocalIdeasManager>(context, listen: false);
     var userManager = Provider.of<LocalUserManager>(context, listen: false);
+    var tagsManager = Provider.of<LocalTagsManager>(context, listen: false);
+    if (_formKey.currentState!.validate()) {
+      // Process the form data
+      final name = userManager.user!.name;
+      final subject = _subjectController.text;
+      final details = _detailsController.text;
+      final tags = _tagsController.text.split(',')
+          .map((tag) => tag.trim())
+          .toList();
+      for (var tag in tags){
+        tagsManager.createTag(tag);
+      }
+      ideaManager.createIdea(name, subject, details, tags);
+      Navigator.pop(context);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
     return Scaffold(
       body: Center(
         child: Container(
@@ -95,17 +115,7 @@ class _NewIdeaFormState extends State<NewIdeaForm> {
                 Center(
                   child: ElevatedButton(
                     onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        // Process the form data
-                        final name = userManager.user.name;
-                        final subject = _subjectController.text;
-                        final details = _detailsController.text;
-                        final tags = _tagsController.text.split(',')
-                            .map((tag) => tag.trim())
-                            .toList();
-                        ideaManager.createIdea(name, subject, details, tags);
-                        Navigator.pop(context);
-                      }
+                      _create();
                     },
                     child: Text('Create'),
                   ),

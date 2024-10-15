@@ -45,6 +45,14 @@ class DataCreator {
     throw Exception("Creation went wrong: ${response.body}");
   }
 
+  Future<void> createTag(String tag) async{
+    var response = await http.post(Uri.http('185.253.75.126:5004', "/tag/${tag}"));
+    if (response.statusCode != 201) {
+      throw Exception("Error creating tag: ${response.body}");
+    }
+
+  }
+
   Future<bool> isUsernameUsed(String userName) async {
     var response = await http.get(Uri.http('185.253.75.126:5002', "/user_exist/$userName"));
     if (response.statusCode == 200){
@@ -52,4 +60,6 @@ class DataCreator {
     }
     throw Exception("Error: ${response.body}");
   }
+
+
 }

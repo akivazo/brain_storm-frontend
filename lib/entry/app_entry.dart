@@ -43,6 +43,7 @@ class EntryPoint extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              SizedBox(height: 100,),
               Text("Welcom to the BrainStorm app",
                   style: TextStyle(color: Colors.black, fontSize: 35),
                   textAlign: TextAlign.center),
@@ -70,7 +71,8 @@ class EntryPoint extends StatelessWidget {
                       },
                       child: Text("Register"))
                 ],
-              )
+              ),
+              SizedBox(height: 100,),
 
             ],
           ),

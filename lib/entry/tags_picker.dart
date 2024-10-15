@@ -1,5 +1,7 @@
 
+import 'package:brain_storm/data/local_data_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../data/data_models.dart';
 import '../data/data_fetcher.dart';
@@ -14,11 +16,12 @@ class _TagsPickerState extends State<TagsPicker> {
   // List of items
   late Future<List<Tag>> futureTags;
   Set<int> selectedTags = {};
+
   @override
   void initState() {
     super.initState();
-    var dataFetcher = DataFetcher();
-    futureTags = dataFetcher.fetchTags();
+    var tagsManager = Provider.of<LocalTagsManager>(context, listen: false);
+    futureTags = tagsManager.fetchTags();
   }
 
   void _submit(List<Tag> tags, Set<int> selectedTags){
@@ -54,7 +57,6 @@ class _TagsPickerState extends State<TagsPicker> {
                           itemBuilder: (context, index) {
                             return CheckboxListTile(
                               title: Text(tags[index].name),
-
                               value: selectedTags.contains(index),
                               onChanged: (bool? value) {
                                 setState(() {

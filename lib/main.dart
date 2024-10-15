@@ -8,7 +8,8 @@ void main() {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) =>  LocalUserManager()),
-      ChangeNotifierProvider(create: (context) =>  LocalIdeasManager())
+      ChangeNotifierProvider(create: (context) =>  LocalIdeasManager()),
+      ChangeNotifierProvider(create: (context) =>  LocalTagsManager())
      ],
     child: MyApp(),
   ));
