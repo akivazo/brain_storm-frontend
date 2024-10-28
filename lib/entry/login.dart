@@ -22,9 +22,10 @@ class _LoginPageState extends State<LoginPage> {
       User? user;
       try {
         user = await dataFetcher.fetchUser(_nameController.text, _passwordController.text);
-      } on Exception catch(e) {
+      } on Exception catch (e, stacktrace){
         setState(() {
-          generalErrorText = e.toString();
+          generalErrorText = "${e}. ${stacktrace}.";
+          return;
         });
       }
       if (user == null){

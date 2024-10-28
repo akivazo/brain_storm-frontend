@@ -4,7 +4,7 @@ import 'dart:convert'; // For working with JSON
 
 
 class DataFetcher {
-  final serverIP = "185.253.75.126";
+  final serverIP = "akivazonenfeld.com";
   Idea _createIdea(Map<String, dynamic> json) {
     return Idea(
       id: json['id'],
@@ -40,7 +40,7 @@ class DataFetcher {
 
   Future<List<Idea>> fetchIdeas({List<String> tags = const []}) async {
     // return only the ideas which has at least one tag from 'tags'
-    final response = await http.get(Uri.http('${serverIP}:5001', '/ideas'));
+    final response = await http.get(Uri.https('${serverIP}', '/idea_api/ideas'));
 
     if (response.statusCode == 200) {
       final List<dynamic> ideasJson = jsonDecode(response.body)["ideas"];
@@ -51,7 +51,7 @@ class DataFetcher {
   }
   
   Future<List<Feedback>> fetchIdeaFeedbacks(String ideaId) async {
-    final response = await http.get(Uri.http("${serverIP}:5003", "/feedbacks/${ideaId}"));
+    final response = await http.get(Uri.https("${serverIP}i", "/feedback_ap/feedbacks/${ideaId}"));
 
     if (response.statusCode == 302) {
       final List<dynamic> feedbacksJson = jsonDecode(response.body)["feedbacks"];
@@ -64,13 +64,13 @@ class DataFetcher {
   }
   
   Future<User?> fetchUser(String userName, String password) async {
-    final response = await http.get(Uri.http("${serverIP}:5002", "/user/${userName}/${password}"));
+    final response = await http.get(Uri.https("${serverIP}", "/user_api/user/${userName}/${password}"));
 
     if (response.statusCode == 200){
       final dynamic userJson = jsonDecode(response.body)["user"];
       return _createUser(userJson);
     } else if (response.statusCode == 404) {
-      return null;
+      throw Exception("Failed to load user: ${response.body}, ${response.statusCode}");
     } else {
       throw Exception("Failed to load user: ${response.body}, ${response.statusCode}");
     }
@@ -79,7 +79,7 @@ class DataFetcher {
   }
 
   Future<List<Tag>> fetchTags() async {
-    final response = await http.get(Uri.http("${serverIP}:5004", "/tags"));
+    final response = await http.get(Uri.https("${serverIP}", "/tag_api/tags"));
     if (response.statusCode == 200){
       final List<dynamic> tags = jsonDecode(response.body)["tags"];
       return tags.map((name) => Tag(name: name as String)).toList();
