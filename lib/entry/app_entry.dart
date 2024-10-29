@@ -1,34 +1,26 @@
-import 'package:brain_storm/data/data_creator.dart';
+
 import 'package:brain_storm/data/data_models.dart';
-import 'package:brain_storm/data/local_data_manager.dart';
+import 'package:brain_storm/data/data_manager.dart';
 import 'package:brain_storm/entry/login.dart';
-import 'package:brain_storm/home_page.dart';
+import 'package:brain_storm/home_page/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'register.dart';
-import 'tags_picker.dart';
 
 class EntryPoint extends StatelessWidget {
   const EntryPoint({super.key});
 
-  void _goToHomePage(User user, BuildContext context) async {
-    var localUSerManager = Provider.of<LocalUserManager>(context, listen: false);
-    localUSerManager.setUser(user);
+  Future<void> _register(BuildContext context) async {
+    await Navigator.of(context).push(MaterialPageRoute(builder: (context) => RegisterPage()));
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => HomePage()));
   }
 
-  Future<void> _register(BuildContext context) async {
-    var user = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => RegisterPage()));
-
-    var dataCreator = DataCreator();
-    dataCreator.createUser(user.name, user.password, user.email, user.tags);
-    _goToHomePage(user, context);
-  }
-
   Future<void> _login(BuildContext context) async {
-    var user = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginPage()));
-    _goToHomePage(user as User, context);
+     await Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginPage()));
+
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => HomePage()));
   }
 
   @override

@@ -1,10 +1,9 @@
 
-import 'package:brain_storm/data/local_data_manager.dart';
+import 'package:brain_storm/data/data_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../data/data_models.dart';
-import '../data/data_fetcher.dart';
 
 
 class TagsPicker extends StatefulWidget {

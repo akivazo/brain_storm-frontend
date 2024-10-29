@@ -1,4 +1,4 @@
-import 'package:brain_storm/data/local_data_manager.dart';
+import 'package:brain_storm/data/data_manager.dart';
 import 'package:brain_storm/entry/app_entry.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 void main() {
   runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider(create: (context) =>  LocalUserManager()),
-      ChangeNotifierProvider(create: (context) =>  LocalIdeasManager()),
+      ChangeNotifierProvider(create: (context) =>  UserManager()),
+      ChangeNotifierProvider(create: (context) =>  IdeasManager()),
       ChangeNotifierProvider(create: (context) =>  LocalTagsManager())
      ],
     child: MyApp(),

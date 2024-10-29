@@ -1,7 +1,8 @@
+import 'package:brain_storm/data/data_manager.dart';
 import 'package:brain_storm/data/data_models.dart';
 import 'package:brain_storm/entry/tags_picker.dart';
 import 'package:flutter/material.dart';
-import '../data/data_creator.dart';
+import 'package:provider/provider.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -17,10 +18,10 @@ class _RegisterPageState extends State<RegisterPage> {
   var generalErrorText = "";
 
   void _register(BuildContext context) async {
-    var dataCreator = DataCreator();
+    var userManager = Provider.of<UserManager>(context, listen: false);
     if (_formKey.currentState!.validate()) {
       var name = _nameController.text;
-      if (await dataCreator.isUsernameUsed(name)){
+      if (await userManager.isUsernameUsed(name)){
         setState(() {
           generalErrorText = "Username '${name}' already exist";
         });
@@ -28,8 +29,16 @@ class _RegisterPageState extends State<RegisterPage> {
         var password = _passwordController.text;
         var email = _emailController.text;
         var tags = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => TagsPicker()));
+        try {
+          userManager.registerUser(name, password, email, (tags as List<Tag>));
+        } catch (e, stacktrace) {
+          setState(() {
+            generalErrorText = "Error: ${e} $stacktrace";
+          });
+          return;
+        }
 
-        Navigator.of(context).pop(User(name: name, password: password, email: email, tags: (tags as List<Tag>)));
+        Navigator.of(context).pop();
       }
 
     }
@@ -124,6 +133,9 @@ class _PasswordFieldState extends State<PasswordField> {
       validator: (value) {
         if (value == null || value.isEmpty) {
           return "Name can't be empty";
+        }
+        if (value.length < 6){
+          return "Password must contains at least 6 characters";
         }
         return null;
       },

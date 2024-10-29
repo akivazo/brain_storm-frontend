@@ -1,6 +1,6 @@
 import 'package:brain_storm/data/data_models.dart';
-import 'package:brain_storm/data/local_data_manager.dart';
-import 'package:brain_storm/new_idea.dart';
+import 'package:brain_storm/data/data_manager.dart';
+import 'package:brain_storm/home_page/new_idea.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -52,7 +52,7 @@ class HomePage extends StatelessWidget {
 class UserProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var userManager = Provider.of<LocalUserManager>(context, listen: true);
+    var userManager = Provider.of<UserManager>(context, listen: true);
     var user = userManager.user!;
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -111,8 +111,8 @@ class _MainFeedState extends State<MainFeed> {
 
   @override
   Widget build(BuildContext context) {
-    final LocalIdeasManager ideasManager = Provider.of<LocalIdeasManager>(context, listen: true);
-    final LocalUserManager userManager = Provider.of<LocalUserManager>(context,  listen: true);
+    final IdeasManager ideasManager = Provider.of<IdeasManager>(context, listen: true);
+    final UserManager userManager = Provider.of<UserManager>(context,  listen: true);
     final user = userManager.user!;
     var futureIdeas = ideasManager.getIdeas(user.tags);
     return FutureBuilder<List<Idea>>(

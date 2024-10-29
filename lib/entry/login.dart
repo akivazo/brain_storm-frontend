@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import '../data/data_models.dart';
-import '../data/data_fetcher.dart';
-import '../data/local_data_manager.dart';
+import 'package:provider/provider.dart';
+import '../data/data_manager.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -13,30 +12,29 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _passwordController = TextEditingController();
-  var dataFetcher = DataFetcher();
-  var localDataManager = LocalUserManager();
   var generalErrorText = "";
 
   void _login(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
-      User? user;
+      var userManager = Provider.of<UserManager>(context, listen: false);
+      var created = false;
       try {
-        user = await dataFetcher.fetchUser(_nameController.text, _passwordController.text);
+         created = await userManager.loginUser(_nameController.text, _passwordController.text);
       } on Exception catch (e, stacktrace){
         setState(() {
           generalErrorText = "${e}. ${stacktrace}.";
-          return;
+
         });
+        return;
       }
-      if (user == null){
+      if (!created){
         setState(() {
           generalErrorText = "Either Username or the passwords were incorrect";
+
         });
-      } else {
-        if (mounted){
-          Navigator.of(context).pop(user);
-        }
+        return;
       }
+      Navigator.of(context).pop();
     }
   }
   @override

@@ -1,5 +1,5 @@
 import 'package:brain_storm/data/data_models.dart';
-import 'package:brain_storm/data/local_data_manager.dart';
+import 'package:brain_storm/data/data_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -73,8 +73,8 @@ class _NewIdeaFormState extends State<NewIdeaForm> {
   final _tagsController = TextEditingController();
 
   void _create(){
-    var ideaManager = Provider.of<LocalIdeasManager>(context, listen: false);
-    var userManager = Provider.of<LocalUserManager>(context, listen: false);
+    var ideaManager = Provider.of<IdeasManager>(context, listen: false);
+    var userManager = Provider.of<UserManager>(context, listen: false);
     var tagsManager = Provider.of<LocalTagsManager>(context, listen: false);
     if (_formKey.currentState!.validate()) {
       // Process the form data

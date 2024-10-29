@@ -2,8 +2,7 @@ import 'data_models.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // For working with JSON
 
-
-class DataFetcher {
+class ServerCommunicator {
   final serverIP = "akivazonenfeld.com";
   Idea _createIdea(Map<String, dynamic> json) {
     return Idea(
@@ -37,10 +36,12 @@ class DataFetcher {
     );
   }
 
-
+  Uri _getUri(String queryPath){
+    return Uri.https(serverIP, queryPath);
+  }
   Future<List<Idea>> fetchIdeas({List<String> tags = const []}) async {
     // return only the ideas which has at least one tag from 'tags'
-    final response = await http.get(Uri.https('${serverIP}', '/idea_api/ideas'));
+    final response = await http.get(_getUri('/idea_api/ideas'));
 
     if (response.statusCode == 200) {
       final List<dynamic> ideasJson = jsonDecode(response.body)["ideas"];
@@ -49,9 +50,9 @@ class DataFetcher {
       throw Exception("Failed to load ideas: ${response.body}, ${response.statusCode}");
     }
   }
-  
+
   Future<List<Feedback>> fetchIdeaFeedbacks(String ideaId) async {
-    final response = await http.get(Uri.https("${serverIP}i", "/feedback_ap/feedbacks/${ideaId}"));
+    final response = await http.get(_getUri("/feedback_ap/feedbacks/${ideaId}"));
 
     if (response.statusCode == 302) {
       final List<dynamic> feedbacksJson = jsonDecode(response.body)["feedbacks"];
@@ -62,9 +63,9 @@ class DataFetcher {
       throw Exception("Failed to load feedbacks: ${response.body}, ${response.statusCode}");
     }
   }
-  
+
   Future<User?> fetchUser(String userName, String password) async {
-    final response = await http.get(Uri.https("${serverIP}", "/user_api/user/${userName}/${password}"));
+    final response = await http.get(_getUri("/user_api/user/${userName}/${password}"));
 
     if (response.statusCode == 200){
       final dynamic userJson = jsonDecode(response.body)["user"];
@@ -79,7 +80,7 @@ class DataFetcher {
   }
 
   Future<List<Tag>> fetchTags() async {
-    final response = await http.get(Uri.https("${serverIP}", "/tag_api/tags"));
+    final response = await http.get(_getUri("/tag_api/tags"));
     if (response.statusCode == 200){
       final List<dynamic> tags = jsonDecode(response.body)["tags"];
       return tags.map((name) => Tag(name: name as String)).toList();
@@ -88,5 +89,62 @@ class DataFetcher {
     }
 
 
+  }
+
+  Future<User> createUser(String name, String password, String email, List<Tag> tags) async {
+    // return the id of the user created
+    var response = await http.post(
+        _getUri("/user_api/user"),
+        headers: {
+          "Content-Type": "application/json", // Specify that you're sending JSON data
+        },
+        body: jsonEncode({
+          "name": name,
+          "password": password,
+          "email": email,
+          "tags": tags.map((tag) => tag.name).toList()
+        }));
+
+    if (response.statusCode == 201){
+      return User(name: name, password: password, email: email, tags: tags);
+    }
+    throw Exception("Creation went wrong: ${response.body}");
+  }
+
+  Future<Idea> createIdea(String ownerName, String subject, String details, List<String> tags) async {
+    // return the id of the user created
+    var response = await http.post(
+        _getUri("/idea_api/idea"),
+        headers: {
+          "Content-Type": "application/json", // Specify that you're sending JSON data
+        },
+        body: jsonEncode({
+          "owner_name": ownerName,
+          "subject": subject,
+          "details": details,
+          "tags": tags
+        }));
+
+    if (response.statusCode == 201){
+      var id = jsonDecode(response.body)["id"];
+      return Idea(id: id, owner_name: ownerName, subject: subject, details: details, tags: tags.map((name) => Tag(name: name)).toList());
+    }
+    throw Exception("Creation went wrong: ${response.body}");
+  }
+
+  Future<void> createTag(String tag) async{
+    var response = await http.post(_getUri("/tag_api/tag/${tag}"));
+    if (response.statusCode != 201) {
+      throw Exception("Error creating tag: ${response.body}");
+    }
+
+  }
+
+  Future<bool> isUsernameUsed(String userName) async {
+    var response = await http.get(_getUri("/user_api/user_exist/$userName"));
+    if (response.statusCode == 200){
+      return jsonDecode(response.body) == "Y";
+    }
+    throw Exception("Error: ${response.body}");
   }
 }
