@@ -1,5 +1,6 @@
 import 'package:brain_storm/data/data_models.dart';
 import 'package:brain_storm/data/data_manager.dart';
+import 'package:brain_storm/data/user_manager.dart';
 import 'package:brain_storm/home_page/new_idea.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -69,7 +70,7 @@ class UserProfile extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(onPressed: (){
-              userManager.user = null;
+              userManager.logoutUser();
               Navigator.pop(context);
             }, child: Text("Logout")),
           )

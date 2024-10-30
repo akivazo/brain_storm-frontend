@@ -1,11 +1,11 @@
 
 
 class Idea {
-  String id;
-  String owner_name;
-  String subject;
-  String details;
-  List<Tag> tags;
+  final String id;
+  final String owner_name;
+  final String subject;
+  final String details;
+  final List<Tag> tags;
 
   Idea({
     required this.id,
@@ -18,10 +18,10 @@ class Idea {
 }
 
 class Feedback {
-  String id;
-  String ideaId;
-  String ownerId;
-  String content;
+  final String id;
+  final String ideaId;
+  final String ownerId;
+  final String content;
 
   Feedback({
     required this.id,
@@ -33,10 +33,10 @@ class Feedback {
 }
 
 class User {
-  String name;
-  String password;
-  String email;
-  List<Tag> tags;
+  final String name;
+  final String password;
+  final String email;
+  final List<Tag> tags;
 
   User({
     required this.name,

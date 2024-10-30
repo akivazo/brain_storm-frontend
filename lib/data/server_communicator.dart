@@ -39,6 +39,7 @@ class ServerCommunicator {
   Uri _getUri(String queryPath){
     return Uri.https(serverIP, queryPath);
   }
+
   Future<List<Idea>> fetchIdeas({List<String> tags = const []}) async {
     // return only the ideas which has at least one tag from 'tags'
     final response = await http.get(_getUri('/idea_api/ideas'));
@@ -50,6 +51,7 @@ class ServerCommunicator {
       throw Exception("Failed to load ideas: ${response.body}, ${response.statusCode}");
     }
   }
+
 
   Future<List<Feedback>> fetchIdeaFeedbacks(String ideaId) async {
     final response = await http.get(_getUri("/feedback_ap/feedbacks/${ideaId}"));
@@ -90,6 +92,8 @@ class ServerCommunicator {
 
 
   }
+
+
 
   Future<User> createUser(String name, String password, String email, List<Tag> tags) async {
     // return the id of the user created

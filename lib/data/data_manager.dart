@@ -3,32 +3,10 @@ import 'package:flutter/material.dart' hide Feedback;
 
 import 'data_models.dart';
 
-class UserManager extends ChangeNotifier {
-  late User? user;
-  final serverCommunicator = ServerCommunicator();
 
-  void _setUser(User user){
-    this.user = user;
-    notifyListeners();
-  }
-  Future<bool> loginUser(String name, String password) async {
-    User? user = await serverCommunicator.fetchUser(name, password);
-    if (user == null){
-      return false;
-    }
-    _setUser(user);
-    return true;
-  }
 
-  void registerUser(String name, String password, String email, List<Tag> tags) async {
-    User user = await serverCommunicator.createUser(name, password, email, tags);
-    _setUser(user);
-  }
 
-  Future<bool> isUsernameUsed(String name){
-    return serverCommunicator.isUsernameUsed(name);
-  }
-}
+
 
 
 class IdeasManager extends ChangeNotifier {
@@ -87,4 +65,7 @@ class LocalTagsManager extends ChangeNotifier {
       return tags;
     });
   }
+
+
 }
+
