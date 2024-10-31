@@ -13,6 +13,10 @@ class UserManager extends ChangeNotifier {
   final serverCommunicator = ServerCommunicator();
   late encrypt.Encrypter encrypter;
 
+  User getUser(){
+    return user!;
+  }
+
   UserManager(){
     final key = encrypt.Key.fromUtf8('my32lengthsupersecretnooneknows2');
     // Create an Encrypter with AES algorithm

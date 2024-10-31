@@ -39,9 +39,32 @@ class IdeasManager extends ChangeNotifier {
 class FeedbackManager extends ChangeNotifier {
 
   final serverCommunicator = ServerCommunicator();
+  Map<String, Future<List<Feedback>>> ideasFeedbacks = {};
 
-  Future<List<Feedback>> getIdeaFeedbacks(Idea idea){
+  Future<List<Feedback>> _getIdeaFeedbacks(Idea idea){
     return serverCommunicator.fetchIdeaFeedbacks(idea.id);
+  }
+
+  Future<List<Feedback>> getIdeaFeedbacks(Idea idea) async {
+    if (ideasFeedbacks.containsKey(idea.id)){
+      return ideasFeedbacks[idea.id]!;
+    }
+    Future<List<Feedback>> feedbacks = _getIdeaFeedbacks(idea);
+    ideasFeedbacks[idea.id] = feedbacks;
+    return feedbacks;
+  }
+
+  void addFeedback(User user, Idea idea, String content) async{
+    var id = await serverCommunicator.addFeedback(idea.id, user.name, content);
+    var feedback =  Feedback(id: id, ownerName: user.name, content: content);
+    if (!ideasFeedbacks.containsKey(idea.id)) {
+      ideasFeedbacks[idea.id] = Future.value(List<Feedback>.empty());
+    }
+    ideasFeedbacks[idea.id] = ideasFeedbacks[idea.id]!.then((value) {
+      value.add(feedback);
+      return value;
+    });
+    notifyListeners();
   }
 
 }
@@ -64,6 +87,7 @@ class LocalTagsManager extends ChangeNotifier {
       tags.add(Tag(name: tag));
       return tags;
     });
+    notifyListeners();
   }
 
 

@@ -1,6 +1,6 @@
-import 'package:brain_storm/data/data_models.dart';
-import 'package:brain_storm/data/data_manager.dart';
+
 import 'package:brain_storm/data/user_manager.dart';
+import 'package:brain_storm/home_page/main_feed.dart';
 import 'package:brain_storm/home_page/new_idea.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -103,80 +103,6 @@ class NavigationMenu extends StatelessWidget {
 }
 
 // Main Feed Widgets
-class MainFeed extends StatefulWidget {
-  @override
-  State<MainFeed> createState() => _MainFeedState();
-}
-
-class _MainFeedState extends State<MainFeed> {
-
-  @override
-  Widget build(BuildContext context) {
-    final IdeasManager ideasManager = Provider.of<IdeasManager>(context, listen: true);
-    final UserManager userManager = Provider.of<UserManager>(context,  listen: true);
-    final user = userManager.user!;
-    var futureIdeas = ideasManager.getIdeas(user.tags);
-    return FutureBuilder<List<Idea>>(
-        future: futureIdeas,
-        builder: (BuildContext context, AsyncSnapshot<List<Idea>> snapshot) {
-          if (snapshot.hasData) {
-            var ideas = snapshot.data!;
-            return ListView.builder(
-                padding: const EdgeInsets.all(16.0),
-                itemCount: ideas.length, // Replace with the number of ideas
-                itemBuilder: (context, index) {
-                  return IdeaCard(idea: ideas[index],);
-                }
-            );
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          }
-          return Text("Somthing went wrong");
-        }
-
-    );
-  }
-}
-
-class IdeaCard extends StatelessWidget {
-  final Idea idea;
-
-  const IdeaCard({super.key, required this.idea});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              idea.subject,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10),
-            Text(idea.details),
-            SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Posted by ${idea.owner_name}'),
-                ElevatedButton(
-                  onPressed: () {
-                    // Add logic to view feedback or add feedback
-                  },
-                  child: Text('Feedback'),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 // Right Sidebar Widgets
 class TrendingIdeas extends StatelessWidget {

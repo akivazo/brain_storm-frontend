@@ -19,8 +19,7 @@ class ServerCommunicator {
   Feedback _createFeedback(Map<String, dynamic> json) {
     return Feedback(
       id: json['id'],
-      ideaId: json['idea_id'],
-      ownerId: json['owner_id'],
+      ownerName: json['owner_name'],
       content: json['content'],
     );
   }
@@ -54,7 +53,7 @@ class ServerCommunicator {
 
 
   Future<List<Feedback>> fetchIdeaFeedbacks(String ideaId) async {
-    final response = await http.get(_getUri("/feedback_ap/feedbacks/${ideaId}"));
+    final response = await http.get(_getUri("/feedback_api/feedbacks/${ideaId}"));
 
     if (response.statusCode == 302) {
       final List<dynamic> feedbacksJson = jsonDecode(response.body)["feedbacks"];
@@ -142,6 +141,22 @@ class ServerCommunicator {
       throw Exception("Error creating tag: ${response.body}");
     }
 
+  }
+
+  Future<String> addFeedback(String ideaId, String username, String content) async{
+    var response = await http.post(_getUri("/feedback_api/feedback"),
+        headers: {
+          "Content-Type": "application/json", // Specify that you're sending JSON data
+        },
+        body: jsonEncode({
+          "owner_name": username,
+          "content": content,
+          "idea_id": ideaId
+        }));
+    if (response.statusCode != 201) {
+      throw Exception("Error creating feedback: ${response.body}, ${response.body}");
+    }
+    return jsonDecode(response.body)["id"];
   }
 
   Future<bool> isUsernameUsed(String userName) async {

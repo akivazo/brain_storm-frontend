@@ -19,14 +19,12 @@ class Idea {
 
 class Feedback {
   final String id;
-  final String ideaId;
-  final String ownerId;
+  final String ownerName;
   final String content;
 
   Feedback({
     required this.id,
-    required this.ideaId,
-    required this.ownerId,
+    required this.ownerName,
     required this.content,
   });
 
