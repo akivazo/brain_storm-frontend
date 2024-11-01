@@ -1,6 +1,6 @@
 # brain_storm
 
-A new Flutter project.
+The place to share your ideas.
 
 ## Getting Started
 
