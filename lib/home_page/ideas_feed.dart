@@ -59,10 +59,6 @@ class IdeaCard extends StatefulWidget {
 }
 
 class _IdeaCardState extends State<IdeaCard> {
-  final _controller = TextEditingController();
-
-
-
 
   @override
   Widget build(BuildContext context) {

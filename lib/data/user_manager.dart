@@ -17,6 +17,11 @@ class UserManager extends ChangeNotifier {
     return user!;
   }
 
+
+  static UserManager getInstance(BuildContext context, {bool listen = false}){
+    return Provider.of<UserManager>(context, listen: listen);
+  }
+
   UserManager(){
     final key = encrypt.Key.fromUtf8('my32lengthsupersecretnooneknows2');
     // Create an Encrypter with AES algorithm

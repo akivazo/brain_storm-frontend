@@ -1,3 +1,5 @@
+import 'package:provider/provider.dart';
+
 import 'server_communicator.dart';
 import 'package:flutter/material.dart' hide Feedback;
 
@@ -40,7 +42,7 @@ class IdeasManager extends ChangeNotifier {
       ideas.remove(idea);
       return ideas;
     });
-    serverCommunicator.removeIdea(idea.id);
+    serverCommunicator.deleteIdea(idea.id);
     notifyListeners();
   }
 }
@@ -75,6 +77,18 @@ class FeedbackManager extends ChangeNotifier {
       return value;
     });
     notifyListeners();
+  }
+
+  void deleteFeedback(Idea idea, Feedback feedback){
+    ideasFeedbacks[idea.id] = ideasFeedbacks[idea.id]!.then((feedbacks) {
+      feedbacks.remove(feedback);
+      return feedbacks;
+    });
+    serverCommunicator.deleteFeedback(idea.id, feedback.id);
+    notifyListeners();
+  }
+  static FeedbackManager getInstance(BuildContext context, {bool listen = false}){
+    return Provider.of<FeedbackManager>(context, listen: listen);
   }
 
 }

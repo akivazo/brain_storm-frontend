@@ -7,18 +7,40 @@ import 'package:provider/provider.dart';
 
 class FeedbackCard extends StatelessWidget {
   final Feedback feedback;
+  final Idea idea;
 
-  const FeedbackCard({super.key, required this.feedback});
+  const FeedbackCard({super.key, required this.idea, required this.feedback});
 
   @override
   Widget build(BuildContext context) {
+    var userName = UserManager.getInstance(context).getUser().name;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Card(
-        child: ListTile(
-          title: Text(feedback.content),
-          subtitle: Text("Posted by ${feedback.ownerName}"),
-        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(feedback.content, style: Theme.of(context).textTheme.bodyLarge,),
+              Row(
+                children: [
+                  Text("Posted by ${feedback.ownerName}", style: Theme.of(context).textTheme.bodySmall),
+                  Spacer(),
+                  Builder(builder: (context) {
+                    if (feedback.ownerName == userName){
+                      return ElevatedButton(onPressed: () {
+                        FeedbackManager.getInstance(context).deleteFeedback(idea, feedback);
+                      }, child: Text("Delete Feedback"));
+                    }
+                    return SizedBox.shrink();
+                  })
+                ],
+              )
+            ],
+          ),
+        )
+
       ),
     );
   }
@@ -49,6 +71,7 @@ class FeedbacksView extends StatelessWidget {
                   // Replace with the number of ideas
                   itemBuilder: (context, index) {
                     return FeedbackCard(
+                      idea: idea,
                       feedback: feedbacks[index],
                     );
                   }),

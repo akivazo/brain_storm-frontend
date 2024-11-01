@@ -167,7 +167,11 @@ class ServerCommunicator {
     throw Exception("Error: ${response.body}");
   }
 
-  void removeIdea(String ideaID) async {
-    await http.delete(_getUri('/idea_api/idea/${ideaID}'));
+  void deleteIdea(String ideaId) async {
+    await http.delete(_getUri('/idea_api/idea/${ideaId}'));
+  }
+
+  void deleteFeedback(String ideaId, String feedbackId) async {
+    await http.delete(_getUri('/feedback_api/feedback/${ideaId}/${feedbackId}'));
   }
 }
