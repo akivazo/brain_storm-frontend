@@ -1,6 +1,7 @@
 import 'package:brain_storm/data/data_manager.dart';
 import 'package:brain_storm/data/data_models.dart';
 import 'package:brain_storm/data/user_manager.dart';
+import 'package:brain_storm/home_page/main_feed.dart';
 import 'package:flutter/material.dart' hide Feedback;
 import 'package:provider/provider.dart';
 
@@ -73,6 +74,10 @@ class ExpendedIdea extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          IconButton(onPressed: () {
+            Provider.of<MainFeedPage>(context, listen: false).goToIdeasFeed();
+          }, icon: Icon(Icons.arrow_back)),
+          SizedBox(height: 20,),
           Text(
             idea.subject,
             style: Theme.of(context).textTheme.headlineMedium,
@@ -89,7 +94,7 @@ class ExpendedIdea extends StatelessWidget {
           ),
           Divider(
             height: 20,
-            indent: 5,
+            indent: 0,
             endIndent: 20,
             color: Colors.black,
           ),
@@ -113,7 +118,7 @@ class ExpendedIdea extends StatelessWidget {
 }
 
 class SubmitFeedbackBox extends StatelessWidget {
-  var _controller = TextEditingController();
+  final _controller = TextEditingController();
   final Idea idea;
 
   SubmitFeedbackBox({super.key, required this.idea});

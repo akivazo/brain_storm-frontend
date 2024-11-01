@@ -87,8 +87,7 @@ class _IdeaCardState extends State<IdeaCard> {
                 Spacer(),
                 ElevatedButton(
                   onPressed: () {
-                    var mainFeedPage = Provider.of<MainFeedPage>(context, listen: false);
-                    mainFeedPage.setPage(ExpendedIdea(idea: widget.idea,));
+                    Provider.of<MainFeedPage>(context, listen: false).goToIdeaFeed(widget.idea);
                   },
                   child: Text('Expend idea'),
                 ),
