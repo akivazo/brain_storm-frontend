@@ -1,4 +1,5 @@
 import 'package:brain_storm/data/user_manager.dart';
+import 'package:brain_storm/home_page/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../data/data_manager.dart';
@@ -35,7 +36,8 @@ class _LoginPageState extends State<LoginPage> {
         });
         return;
       }
-      Navigator.of(context).pop();
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => HomePage()));
     }
   }
   @override

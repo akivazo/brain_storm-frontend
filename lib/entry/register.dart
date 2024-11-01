@@ -2,6 +2,7 @@ import 'package:brain_storm/data/data_manager.dart';
 import 'package:brain_storm/data/data_models.dart';
 import 'package:brain_storm/data/user_manager.dart';
 import 'package:brain_storm/entry/tags_picker.dart';
+import 'package:brain_storm/home_page/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -39,7 +40,8 @@ class _RegisterPageState extends State<RegisterPage> {
           return;
         }
 
-        Navigator.of(context).pop();
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => HomePage()));
       }
 
     }

@@ -27,19 +27,11 @@ class _EntryPointState extends State<EntryPoint> {
   Future<void> _register(BuildContext context) async {
     await Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => RegisterPage()));
-    _navigateToHomePage();
   }
 
   Future<void> _login(BuildContext context) async {
     await Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => LoginPage()));
-
-    _navigateToHomePage();
-  }
-
-  void _navigateToHomePage() {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => HomePage()));
   }
 
   @override
@@ -51,7 +43,7 @@ class _EntryPointState extends State<EntryPoint> {
           return Center(child: CircularProgressIndicator());
         }
         if (snapshot.hasError) {
-          //return Center(child: Text('An error occurred: ${snapshot.error}'));
+          return Center(child: Text('An error occurred: ${snapshot.error}'));
         }
 
         if (snapshot.data!) {
