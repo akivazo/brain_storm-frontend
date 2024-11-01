@@ -166,4 +166,8 @@ class ServerCommunicator {
     }
     throw Exception("Error: ${response.body}");
   }
+
+  void removeIdea(String ideaID) async {
+    await http.delete(_getUri('/idea_api/idea/${ideaID}'));
+  }
 }

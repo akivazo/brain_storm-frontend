@@ -23,8 +23,8 @@ class IdeasFeed extends StatelessWidget {
     }
     final IdeasManager ideasManager =
     Provider.of<IdeasManager>(context, listen: true);
-
-    var futureIdeas = ideasManager.getIdeas(_tags);
+    // use list for order
+    var futureIdeas = ideasManager.getIdeas(_tags).then((ideas) { return ideas.toList();});
     return FutureBuilder<List<Idea>>(
         future: futureIdeas,
         builder: (BuildContext context, AsyncSnapshot<List<Idea>> snapshot) {
@@ -91,7 +91,15 @@ class _IdeaCardState extends State<IdeaCard> {
                   },
                   child: Text('Expend idea'),
                 ),
-
+                Builder(builder: (context) {
+                  var userName = Provider.of<UserManager>(context, listen: false).getUser().name;
+                  if (widget.idea.owner_name == userName){
+                    return ElevatedButton(onPressed: () {
+                      Provider.of<IdeasManager>(context, listen: false).removeIdea(widget.idea);
+                    }, child: Text("Delete Idea"));
+                  }
+                  return SizedBox.shrink();
+                })
 
               ],
             ),

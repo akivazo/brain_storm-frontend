@@ -10,12 +10,13 @@ import 'data_models.dart';
 
 
 class IdeasManager extends ChangeNotifier {
-  late Future<List<Idea>> _ideas;
+  late Future<Set<Idea>> _ideas;
   final serverCommunicator = ServerCommunicator();
 
   IdeasManager()  {
-    _ideas = serverCommunicator.fetchIdeas();
+    _ideas = serverCommunicator.fetchIdeas().then((ideas) {return ideas.toSet();});
   }
+
 
   void createIdea(String ownerName, String subject, String details, List<String> tags){
     Future<Idea> idea = serverCommunicator.createIdea(ownerName, subject, details, tags);
@@ -30,8 +31,17 @@ class IdeasManager extends ChangeNotifier {
     
   }
 
-  Future<List<Idea>> getIdeas(List<Tag> tags){
+  Future<Set<Idea>> getIdeas(List<Tag> tags){
     return _ideas;
+  }
+
+  void removeIdea(Idea idea){
+    _ideas = _ideas.then((ideas) {
+      ideas.remove(idea);
+      return ideas;
+    });
+    serverCommunicator.removeIdea(idea.id);
+    notifyListeners();
   }
 }
 

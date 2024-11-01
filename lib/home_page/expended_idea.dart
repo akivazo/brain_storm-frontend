@@ -92,18 +92,8 @@ class ExpendedIdea extends StatelessWidget {
             idea.details,
             style: TextStyle(fontSize: 16),
           ),
-          Divider(
-            height: 20,
-            indent: 0,
-            endIndent: 20,
-            color: Colors.black,
-          ),
+
           SizedBox(height: 20,),
-          Text(
-            'Feedbacks',
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-          SizedBox(height: 8.0),
           FeedbacksView(
             idea: idea,
           ),
