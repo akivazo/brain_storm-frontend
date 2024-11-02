@@ -9,12 +9,12 @@ import 'dart:convert';
 import 'dart:io';
 
 class UserManager extends ChangeNotifier {
-  User? user;
+  User? _user;
   final serverCommunicator = ServerCommunicator();
   late encrypt.Encrypter encrypter;
 
   User getUser(){
-    return user!;
+    return _user!;
   }
 
 
@@ -50,7 +50,7 @@ class UserManager extends ChangeNotifier {
 
 
   void _setUser(User user){
-    this.user = user;
+    this._user = user;
     notifyListeners();
   }
 
@@ -75,7 +75,7 @@ class UserManager extends ChangeNotifier {
   }
 
   Future<bool> isUserLoggedIn() async {
-    if (user == null){
+    if (_user == null){
       return await _loginFromCache();
     }
     return true;
@@ -92,15 +92,15 @@ class UserManager extends ChangeNotifier {
   }
 
   void logoutUser(){
-    if (user != null){
+    if (_user != null){
       removeCachedUser();
-      user == null;
+      _user == null;
     }
 
   }
 
-  void registerUser(String name, String password, String email, List<Tag> tags) async {
-    User user = await serverCommunicator.createUser(name, password, email, tags);
+  void registerUser(String name, String password, String email) async {
+    User user = await serverCommunicator.createUser(name, password, email);
     _setUser(user);
   }
 

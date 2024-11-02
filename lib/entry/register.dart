@@ -30,9 +30,9 @@ class _RegisterPageState extends State<RegisterPage> {
       } else {
         var password = _passwordController.text;
         var email = _emailController.text;
-        var tags = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => TagsPicker()));
+
         try {
-          userManager.registerUser(name, password, email, (tags as List<Tag>));
+          userManager.registerUser(name, password, email);
         } catch (e, stacktrace) {
           setState(() {
             generalErrorText = "Error: ${e} $stacktrace";

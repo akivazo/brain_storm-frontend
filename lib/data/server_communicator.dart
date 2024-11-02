@@ -10,9 +10,7 @@ class ServerCommunicator {
       owner_name: json['owner_name'],
       subject: json['subject'],
       details: json['details'],
-      tags: (json['tags'] as List<dynamic>)
-          .map((tag) => Tag(name: tag as String))
-          .toList(),
+      tags: (json['tags'] as List<dynamic>).cast<String>(),
     );
   }
 
@@ -29,9 +27,6 @@ class ServerCommunicator {
       name: json['name'],
       password: json["password"],
       email: json['email'],
-      tags: (json['tags'] as List<dynamic>)
-          .map((tag) => Tag(name: tag as String))
-          .toList(),
     );
   }
 
@@ -83,8 +78,8 @@ class ServerCommunicator {
   Future<List<Tag>> fetchTags() async {
     final response = await http.get(_getUri("/tag_api/tags"));
     if (response.statusCode == 200){
-      final List<dynamic> tags = jsonDecode(response.body)["tags"];
-      return tags.map((name) => Tag(name: name as String)).toList();
+      final Map<String, int> tags = jsonDecode(response.body)["tags"];
+      return tags.entries.map((entry) {return Tag(name: entry.key, count: entry.value);}).toList();
     } else {
       throw Exception("Failed to load tags: ${response.body}, ${response.statusCode}");
     }
@@ -94,7 +89,7 @@ class ServerCommunicator {
 
 
 
-  Future<User> createUser(String name, String password, String email, List<Tag> tags) async {
+  Future<User> createUser(String name, String password, String email) async {
     // return the id of the user created
     var response = await http.post(
         _getUri("/user_api/user"),
@@ -104,12 +99,11 @@ class ServerCommunicator {
         body: jsonEncode({
           "name": name,
           "password": password,
-          "email": email,
-          "tags": tags.map((tag) => tag.name).toList()
+          "email": email
         }));
 
     if (response.statusCode == 201){
-      return User(name: name, password: password, email: email, tags: tags);
+      return User(name: name, password: password, email: email);
     }
     throw Exception("Creation went wrong: ${response.body}");
   }
@@ -129,17 +123,19 @@ class ServerCommunicator {
         }));
 
     if (response.statusCode == 201){
-      var id = jsonDecode(response.body)["id"];
-      return Idea(id: id, owner_name: ownerName, subject: subject, details: details, tags: tags.map((name) => Tag(name: name)).toList());
+      Map<String, String> idea = jsonDecode(response.body)["idea"];
+      return _createIdea(idea);
+
     }
     throw Exception("Creation went wrong: ${response.body}");
   }
 
-  Future<void> createTag(String tag) async{
+  Future<int> createTag(String tag) async{
     var response = await http.post(_getUri("/tag_api/tag/${tag}"));
     if (response.statusCode != 201) {
       throw Exception("Error creating tag: ${response.body}");
     }
+    return jsonDecode(response.body)["count"] as int;
 
   }
 

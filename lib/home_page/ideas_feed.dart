@@ -14,17 +14,11 @@ class IdeasFeed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Tag>? _tags;
-    if (tags == null){
-      final UserManager userManager = Provider.of<UserManager>(context, listen: true);
-      _tags = userManager.user!.tags;
-    } else {
-      _tags = tags!;
-    }
+
     final IdeasManager ideasManager =
     Provider.of<IdeasManager>(context, listen: true);
     // use list for order
-    var futureIdeas = ideasManager.getIdeas(_tags).then((ideas) { return ideas.toList();});
+    var futureIdeas = ideasManager.getIdeas(tags ?? []).then((ideas) { return ideas.toList();});
     return FutureBuilder<List<Idea>>(
         future: futureIdeas,
         builder: (BuildContext context, AsyncSnapshot<List<Idea>> snapshot) {
@@ -74,12 +68,12 @@ class _IdeaCardState extends State<IdeaCard> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10),
-            Text(widget.idea.details),
+            Text(widget.idea.details, style: Theme.of(context).textTheme.bodyLarge),
             SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text('Posted by ${widget.idea.owner_name}'),
+                Text('Posted by: ${widget.idea.owner_name}', style: Theme.of(context).textTheme.bodySmall,),
                 Spacer(),
                 ElevatedButton(
                   onPressed: () {

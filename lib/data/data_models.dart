@@ -5,7 +5,7 @@ class Idea {
   final String owner_name;
   final String subject;
   final String details;
-  final List<Tag> tags;
+  final List<String> tags;
 
   Idea({
     required this.id,
@@ -34,19 +34,18 @@ class User {
   final String name;
   final String password;
   final String email;
-  final List<Tag> tags;
 
   User({
     required this.name,
     required this.password,
     required this.email,
-    this.tags = const [],
   });
 
 }
 
 class Tag {
   final String name;
+  final int count;
 
-  Tag({required this.name});
+  Tag({required this.name, required this.count});
 }

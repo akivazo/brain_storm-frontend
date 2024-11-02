@@ -12,7 +12,6 @@ void main() {
     providers: [
       ChangeNotifierProvider(create: (context) =>  UserManager()),
       ChangeNotifierProvider(create: (context) =>  IdeasManager()),
-      ChangeNotifierProvider(create: (context) =>  LocalTagsManager()),
       ChangeNotifierProvider(create: (context) =>  FeedbackManager()),
       ChangeNotifierProvider(create: (context) =>  MainFeedPage())
      ],

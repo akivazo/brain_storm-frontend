@@ -76,10 +76,10 @@ class _NewIdeaFormState extends State<NewIdeaForm> {
   void _create(){
     var ideaManager = Provider.of<IdeasManager>(context, listen: false);
     var userManager = Provider.of<UserManager>(context, listen: false);
-    var tagsManager = Provider.of<LocalTagsManager>(context, listen: false);
+    var tagsManager = Provider.of<TagsManager>(context, listen: false);
     if (_formKey.currentState!.validate()) {
       // Process the form data
-      final name = userManager.user!.name;
+      final name = userManager.getUser().name;
       final subject = _subjectController.text;
       final details = _detailsController.text;
       final tags = _tagsController.text.split(',')

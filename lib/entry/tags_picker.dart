@@ -19,7 +19,7 @@ class _TagsPickerState extends State<TagsPicker> {
   @override
   void initState() {
     super.initState();
-    var tagsManager = Provider.of<LocalTagsManager>(context, listen: false);
+    var tagsManager = Provider.of<TagsManager>(context, listen: false);
     futureTags = tagsManager.fetchTags();
   }
 
@@ -36,6 +36,13 @@ class _TagsPickerState extends State<TagsPicker> {
     return FutureBuilder<List<dynamic>>(
         future: futureTags,
         builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Text("Error: ${snapshot.error}");
+          }
+
           if (snapshot.hasData) {
             var tags  = snapshot.data! as List<Tag>;
             return Scaffold(
@@ -82,9 +89,8 @@ class _TagsPickerState extends State<TagsPicker> {
                 ),
               ),
             );
-          } else {
-            return Center(child: Card(child: Text("Loading..."),));
           }
+          return Text("Somthing went wrong");
 
         });
   }

@@ -93,22 +93,19 @@ class FeedbackManager extends ChangeNotifier {
 
 }
 
-class LocalTagsManager extends ChangeNotifier {
+class TagsManager extends ChangeNotifier {
   final serverCommunicator = ServerCommunicator();
   late Future<List<Tag>> tags;
 
-  LocalTagsManager(){
-    tags = serverCommunicator.fetchTags();
-  }
-
   Future<List<Tag>> fetchTags() async {
+    tags = serverCommunicator.fetchTags();
     return tags;
   }
 
   Future<void> createTag(String tag) async {
-    serverCommunicator.createTag(tag);
+    var count = await serverCommunicator.createTag(tag);
     tags = tags.then((tags)  {
-      tags.add(Tag(name: tag));
+      tags.add(Tag(name: tag, count: count));
       return tags;
     });
     notifyListeners();
