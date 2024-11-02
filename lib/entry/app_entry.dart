@@ -5,7 +5,6 @@ import 'package:brain_storm/home_page/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'register.dart';
-import 'dart:html' as html;
 
 class EntryPoint extends StatefulWidget {
   const EntryPoint({super.key});
@@ -77,10 +76,7 @@ class _EntryPointState extends State<EntryPoint> {
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.black, fontSize: 30),
                     ),
-                    SizedBox(height: MediaQuery
-                        .of(context)
-                        .size
-                        .height / 2,),
+                    Spacer(),
                     Padding(
                       padding: const EdgeInsets.all(15.0),
                       child: Row(
