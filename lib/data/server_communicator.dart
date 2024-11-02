@@ -72,7 +72,7 @@ class ServerCommunicator {
       final dynamic userJson = jsonDecode(response.body)["user"];
       return _createUser(userJson);
     } else if (response.statusCode == 404) {
-      throw Exception("Failed to load user: ${response.body}, ${response.statusCode}");
+      return null;
     } else {
       throw Exception("Failed to load user: ${response.body}, ${response.statusCode}");
     }
