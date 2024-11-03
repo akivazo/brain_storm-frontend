@@ -74,9 +74,8 @@ class _NewIdeaFormState extends State<NewIdeaForm> {
   final _tagsController = TextEditingController();
 
   void _create(){
-    var ideaManager = Provider.of<IdeasManager>(context, listen: false);
-    var userManager = Provider.of<UserManager>(context, listen: false);
-    var tagsManager = Provider.of<TagsManager>(context, listen: false);
+    var ideaManager = IdeasManager.getInstance(context);
+    var userManager = UserManager.getInstance(context);
     if (_formKey.currentState!.validate()) {
       // Process the form data
       final name = userManager.getUser().name;
@@ -85,10 +84,8 @@ class _NewIdeaFormState extends State<NewIdeaForm> {
       final tags = _tagsController.text.split(',')
           .map((tag) => tag.trim())
           .toList();
-      for (var tag in tags){
-        tagsManager.createTag(tag);
-      }
-      ideaManager.createIdea(name, subject, details, tags);
+
+      ideaManager.createIdea(name, subject, details, tags, context);
       Navigator.pop(context);
     }
   }

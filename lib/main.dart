@@ -13,7 +13,8 @@ void main() {
       ChangeNotifierProvider(create: (context) =>  UserManager()),
       ChangeNotifierProvider(create: (context) =>  IdeasManager()),
       ChangeNotifierProvider(create: (context) =>  FeedbackManager()),
-      ChangeNotifierProvider(create: (context) =>  MainFeedPage())
+      ChangeNotifierProvider(create: (context) =>  MainFeedPage()),
+      ChangeNotifierProvider(create: (context) =>  TagsManager()),
      ],
     child: MyApp(),
   ));

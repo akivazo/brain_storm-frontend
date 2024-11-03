@@ -23,9 +23,14 @@ class MainFeedPage extends ChangeNotifier {
   void goToIdeasFeed(){
     setPage(_ideasFeed);
   }
+
   void setPage(Widget page){
     feedPage = page;
     notifyListeners();
+  }
+
+  static MainFeedPage getInstance(BuildContext context, {bool listen = false}){
+    return Provider.of<MainFeedPage>(context, listen: listen);
   }
 }
 

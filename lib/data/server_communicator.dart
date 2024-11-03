@@ -75,11 +75,11 @@ class ServerCommunicator {
 
   }
 
-  Future<List<Tag>> fetchTags() async {
+  Future<Map<String, int>> fetchTags() async {
     final response = await http.get(_getUri("/tag_api/tags"));
     if (response.statusCode == 200){
-      final Map<String, int> tags = jsonDecode(response.body)["tags"];
-      return tags.entries.map((entry) {return Tag(name: entry.key, count: entry.value);}).toList();
+      final Map<dynamic, dynamic> tags = jsonDecode(response.body)["tags"];
+      return tags.map((key, value) {return MapEntry(key as String, value as int);});
     } else {
       throw Exception("Failed to load tags: ${response.body}, ${response.statusCode}");
     }
@@ -123,7 +123,7 @@ class ServerCommunicator {
         }));
 
     if (response.statusCode == 201){
-      Map<String, String> idea = jsonDecode(response.body)["idea"];
+      Map<String, dynamic> idea = jsonDecode(response.body)["idea"];
       return _createIdea(idea);
 
     }
@@ -169,5 +169,14 @@ class ServerCommunicator {
 
   void deleteFeedback(String ideaId, String feedbackId) async {
     await http.delete(_getUri('/feedback_api/feedback/${ideaId}/${feedbackId}'));
+  }
+
+  void deleteIdeaFeedbacks(String ideaId) async {
+    await http.delete(_getUri('/feedback_api/feedbacks/${ideaId}'));
+  }
+
+  Future<int> removeTag(String tag) async {
+    var response = await http.delete(_getUri("/tag_api/tag/${tag}"));
+    return jsonDecode(response.body)["count"] as int;
   }
 }

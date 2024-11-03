@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 
 class IdeasFeed extends StatelessWidget {
 
-  final List<Tag>? tags;
+  final List<String>? tags;
 
   const IdeasFeed({super.key, this.tags});
 
@@ -27,10 +27,21 @@ class IdeasFeed extends StatelessWidget {
           }
           if (snapshot.hasData) {
             var ideas = snapshot.data!;
+            if (ideas.isEmpty){
+              return Center(child: Text("No ideas to present"));
+            }
             return ListView.builder(
                 padding: const EdgeInsets.all(16.0),
-                itemCount: ideas.length, // Replace with the number of ideas
+                itemCount: ideas.length + 1, // Replace with the number of ideas
                 itemBuilder: (context, index) {
+                  if (index == 0){
+                    if (tags != null){
+                      return Text("Tags: ${tags!.join(", ")}", style: Theme.of(context).textTheme.labelMedium,);
+                    }
+                    return SizedBox.shrink();
+
+                  }
+                  index -= 1;
                   return IdeaCard(
                     idea: ideas[index],
                   );
@@ -69,11 +80,18 @@ class _IdeaCardState extends State<IdeaCard> {
             ),
             SizedBox(height: 10),
             Text(widget.idea.details, style: Theme.of(context).textTheme.bodyLarge),
-            SizedBox(height: 10),
+            Divider(height: 20, endIndent: 40,),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text('Posted by: ${widget.idea.owner_name}', style: Theme.of(context).textTheme.bodySmall,),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("tags: ${widget.idea.tags.join(", ")}"),
+                    SizedBox(height: 5,),
+                    Text('Posted by: ${widget.idea.owner_name}', style: Theme.of(context).textTheme.bodySmall,),
+                  ],
+                ),
                 Spacer(),
                 ElevatedButton(
                   onPressed: () {
@@ -85,7 +103,7 @@ class _IdeaCardState extends State<IdeaCard> {
                   var userName = Provider.of<UserManager>(context, listen: false).getUser().name;
                   if (widget.idea.owner_name == userName){
                     return ElevatedButton(onPressed: () {
-                      Provider.of<IdeasManager>(context, listen: false).removeIdea(widget.idea);
+                      Provider.of<IdeasManager>(context, listen: false).removeIdea(widget.idea, context);
                     }, child: Text("Delete Idea"));
                   }
                   return SizedBox.shrink();

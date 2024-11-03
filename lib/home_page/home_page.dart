@@ -1,5 +1,6 @@
 
 import 'package:brain_storm/data/user_manager.dart';
+import 'package:brain_storm/home_page/filter_view.dart';
 import 'package:brain_storm/home_page/main_feed.dart';
 import 'package:brain_storm/home_page/new_idea.dart';
 import 'package:flutter/material.dart';
@@ -38,8 +39,7 @@ class HomePage extends StatelessWidget {
             color: Colors.grey[300],
             child: Column(
               children: [
-                TrendingIdeas(),
-                TagsAndCategories(),
+                FilterView()
               ],
             ),
           ),

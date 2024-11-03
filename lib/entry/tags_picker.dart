@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../data/data_models.dart';
 
-
+/*
 class TagsPicker extends StatefulWidget {
   @override
   _TagsPickerState createState() => _TagsPickerState();
@@ -20,7 +20,7 @@ class _TagsPickerState extends State<TagsPicker> {
   void initState() {
     super.initState();
     var tagsManager = Provider.of<TagsManager>(context, listen: false);
-    futureTags = tagsManager.fetchTags();
+    futureTags = tagsManager.getTags();
   }
 
   void _submit(List<Tag> tags, Set<int> selectedTags){
@@ -94,4 +94,4 @@ class _TagsPickerState extends State<TagsPicker> {
 
         });
   }
-}
+}*/
