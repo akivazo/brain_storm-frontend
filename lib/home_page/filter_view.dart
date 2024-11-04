@@ -1,12 +1,7 @@
 import 'package:brain_storm/data/data_manager.dart';
-import 'package:brain_storm/data/data_models.dart';
-import 'package:brain_storm/data/user_manager.dart';
 import 'package:brain_storm/home_page/ideas_feed.dart';
 import 'package:brain_storm/home_page/main_feed.dart';
-import 'package:brain_storm/home_page/new_idea.dart';
-import 'package:encrypt/encrypt.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class TagsFilter extends StatelessWidget {
   @override
@@ -42,6 +37,7 @@ class TagsFilter extends StatelessWidget {
                           children: [
                             SizedBox(width: 10,),
                             Icon(Icons.tag),
+                            SizedBox(width: 10,),
                             Text("Tags", style: Theme.of(context).textTheme.headlineSmall,),
                           ],
                         )

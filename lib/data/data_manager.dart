@@ -130,6 +130,16 @@ class TagsManager extends ChangeNotifier {
     tags = serverCommunicator.fetchTags();
   }
 
+  Future<List<String>> getSortedTags(){
+    var sortedTags = tags.then((tags) {
+      var _tags = tags.entries
+          .toList();
+        _tags.sort((a, b) => a.value.compareTo(b.value));
+        return _tags.map((entry) => entry.key).toList();
+    });
+    return sortedTags;
+  }
+
   Future<Map<String, int>> getTags() async {
     return tags;
   }
