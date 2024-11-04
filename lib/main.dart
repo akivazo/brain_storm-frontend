@@ -15,6 +15,7 @@ void main() {
       ChangeNotifierProvider(create: (context) =>  FeedbackManager()),
       ChangeNotifierProvider(create: (context) =>  MainFeedPage()),
       ChangeNotifierProvider(create: (context) =>  TagsManager()),
+      ChangeNotifierProvider(create: (context) =>  FavoriteManager()),
      ],
     child: MyApp(),
   ));

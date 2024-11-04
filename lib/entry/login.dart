@@ -25,7 +25,6 @@ class _LoginPageState extends State<LoginPage> {
       } on Exception catch (e, stacktrace){
         setState(() {
           generalErrorText = "${e}. ${stacktrace}.";
-
         });
         return;
       }

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart' hide Feedback;
 
 import 'data_models.dart';
 
+
 class IdeasManager extends ChangeNotifier {
   late Future<Set<Idea>> _ideas;
   final serverCommunicator = ServerCommunicator();
@@ -176,5 +177,21 @@ class TagsManager extends ChangeNotifier {
       }
     }
     notifyListeners();
+  }
+}
+
+class FavoriteManager extends ChangeNotifier {
+  final serverCommunicator = ServerCommunicator();
+
+  void addFavorite(User user, Idea idea) {
+    serverCommunicator.addFavoriteIdea(user.name, idea.id);
+  }
+
+  void removeFavorite(User user, Idea idea) {
+    serverCommunicator.removeFavoriteIdea(user.name, idea.id);
+  }
+
+  static FavoriteManager getInstance(BuildContext context, {bool listen = false}) {
+    return Provider.of<FavoriteManager>(context, listen: listen);
   }
 }

@@ -87,7 +87,13 @@ class ServerCommunicator {
 
   }
 
+  void addFavoriteIdea(String userName, String ideaId) async {
+    await http.post(_getUri("/favorite_api/favorite/$userName/$ideaId"));
+  }
 
+  void removeFavoriteIdea(String userName, String ideaId) async {
+    await http.delete(_getUri("/favorite_api/favorite/$userName/$ideaId"));
+  }
 
   Future<User> createUser(String name, String password, String email) async {
     // return the id of the user created
@@ -179,4 +185,6 @@ class ServerCommunicator {
     var response = await http.delete(_getUri("/tag_api/tag/${tag}"));
     return jsonDecode(response.body)["count"] as int;
   }
+
+
 }

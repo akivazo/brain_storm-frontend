@@ -97,14 +97,15 @@ class _IdeaCardState extends State<IdeaCard> {
                   onPressed: () {
                     Provider.of<MainFeedPage>(context, listen: false).goToIdeaFeed(widget.idea);
                   },
-                  child: Text('Expend idea'),
+                  child: Text('Feedbacks'),
                 ),
+                FavoriteIcon(idea: widget.idea,),
                 Builder(builder: (context) {
                   var userName = Provider.of<UserManager>(context, listen: false).getUser().name;
                   if (widget.idea.owner_name == userName){
                     return ElevatedButton(onPressed: () {
                       Provider.of<IdeasManager>(context, listen: false).removeIdea(widget.idea, context);
-                    }, child: Text("Delete Idea"));
+                    }, child: Text("Delete Idea"),);
                   }
                   return SizedBox.shrink();
                 })
@@ -115,5 +116,35 @@ class _IdeaCardState extends State<IdeaCard> {
         ),
       ),
     );
+  }
+}
+
+class FavoriteIcon extends StatefulWidget {
+  final Idea idea;
+
+  const FavoriteIcon({super.key, required this.idea});
+  @override
+  State<FavoriteIcon> createState() => _FavoriteIconState();
+}
+
+class _FavoriteIconState extends State<FavoriteIcon> {
+  var _liked = false;
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(onPressed: (){
+      var userManager = UserManager.getInstance(context);
+      var favoriteManager = FavoriteManager.getInstance(context);
+      if (_liked){
+        favoriteManager.addFavorite(userManager.getUser(), widget.idea);
+      } else {
+        favoriteManager.removeFavorite(userManager.getUser(), widget.idea);
+      }
+      setState(() {
+        _liked = !_liked;
+      });
+
+
+
+    }, icon: Icon(_liked ?  Icons.favorite : Icons.favorite_border ));
   }
 }
