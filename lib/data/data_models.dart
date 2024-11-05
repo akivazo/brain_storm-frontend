@@ -6,12 +6,14 @@ class Idea {
   final String subject;
   final String details;
   final List<String> tags;
+  final int timestamp;
 
   Idea({
     required this.id,
     required this.owner_name,
     required this.subject,
     required this.details,
+    required this.timestamp,
     this.tags = const [],
   });
 

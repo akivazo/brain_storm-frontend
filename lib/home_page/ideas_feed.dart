@@ -3,22 +3,33 @@ import 'package:brain_storm/data/data_models.dart';
 import 'package:brain_storm/data/user_manager.dart';
 import 'package:brain_storm/home_page/expended_idea.dart';
 import 'package:brain_storm/home_page/main_feed.dart';
+import 'package:encrypt/encrypt.dart';
 import 'package:flutter/material.dart' hide Feedback;
 import 'package:provider/provider.dart';
 
+enum IdeasSortingMethod {
+  TIMESTAMP,
+  FAVORITES,
+}
 class IdeasFeed extends StatelessWidget {
 
   final List<String>? tags;
+  final IdeasSortingMethod sortingMethod;
 
-  const IdeasFeed({super.key, this.tags});
+  const IdeasFeed({super.key, this.tags, this.sortingMethod = IdeasSortingMethod.TIMESTAMP});
 
   @override
   Widget build(BuildContext context) {
 
-    final IdeasManager ideasManager =
-    Provider.of<IdeasManager>(context, listen: true);
+    final IdeasManager ideasManager = Provider.of<IdeasManager>(context, listen: true);
     // use list for order
-    var futureIdeas = ideasManager.getIdeas(tags ?? []).then((ideas) { return ideas.toList();});
+    var futureIdeas = ideasManager.getIdeas(tags ?? []).then((ideas) {
+      var _ideas = ideas.toList();
+      _ideas.sort((a, b) {return a.timestamp.compareTo(b.timestamp);});
+
+
+      return ideas.toList();
+    });
     return FutureBuilder<List<Idea>>(
         future: futureIdeas,
         builder: (BuildContext context, AsyncSnapshot<List<Idea>> snapshot) {
@@ -47,7 +58,7 @@ class IdeasFeed extends StatelessWidget {
                   );
                 });
           } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
+            throw Text('Error building ideas: ${snapshot.error}');
           }
           return Text("Somthing went wrong");
         });

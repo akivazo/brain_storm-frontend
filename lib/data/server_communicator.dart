@@ -10,6 +10,7 @@ class ServerCommunicator {
       owner_name: json['owner_name'],
       subject: json['subject'],
       details: json['details'],
+      timestamp: int.tryParse(json["time_created"] as String)!,
       tags: (json['tags'] as List<dynamic>).cast<String>(),
     );
   }
@@ -34,12 +35,14 @@ class ServerCommunicator {
     return Uri.https(serverIP, queryPath);
   }
 
-  Future<List<Idea>> fetchIdeas({List<String> tags = const []}) async {
+  Future<List<Idea>> fetchIdeas() async {
     // return only the ideas which has at least one tag from 'tags'
     final response = await http.get(_getUri('/idea_api/ideas'));
 
     if (response.statusCode == 200) {
+
       final List<dynamic> ideasJson = jsonDecode(response.body)["ideas"];
+      print(ideasJson);
       return ideasJson.map((ideaJson) => _createIdea(ideaJson)).toList();
     } else  {
       throw Exception("Failed to load ideas: ${response.body}, ${response.statusCode}");
