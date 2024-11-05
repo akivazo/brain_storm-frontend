@@ -82,8 +82,14 @@ class _TagsFieldState extends State<TagsField> {
 
   Future<List<String>> getTagsSuggestion(String text) async {
     var tagsManager = TagsManager.getInstance(context);
-    return tagsManager.getSortedTags().then((tags) {
-      return tags
+    return tagsManager.getTags().then((tags) {
+      var _tags = tags.entries.toList();
+      _tags.sort((a, b) {
+        return b.value - a.value;
+      });
+
+
+      return _tags.map((entry) {return entry.key;})
           .where((tag) => tag.toLowerCase().contains(text.toLowerCase()))
           .toList();
     });
@@ -210,7 +216,7 @@ class _NewIdeaFormState extends State<NewIdeaForm> {
     var userManager = UserManager.getInstance(context);
     if (_formKey.currentState!.validate()) {
       // Process the form data
-      final name = userManager.getUser().name;
+      final name = userManager.getUserName();
       final subject = _subjectController.text;
       final details = _detailsController.text;
       final tags = _chosenTags.toList();

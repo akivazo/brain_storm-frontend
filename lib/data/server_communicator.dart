@@ -123,7 +123,7 @@ class ServerCommunicator {
         }));
 
     if (response.statusCode == 201){
-      return User(name: name, password: password, email: email, favoritesIdea: {});
+      return User(name: name, password: password, email: email, favoritesIdea: []);
     }
     throw Exception("Creation went wrong: ${response.body}");
   }

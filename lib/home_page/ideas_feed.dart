@@ -114,7 +114,7 @@ class _IdeaCardState extends State<IdeaCard> {
                 ),
                 FavoriteIcon(idea: widget.idea,),
                 Builder(builder: (context) {
-                  var userName = Provider.of<UserManager>(context, listen: false).getUser().name;
+                  var userName = Provider.of<UserManager>(context, listen: false).getUserName();
                   if (widget.idea.owner_name == userName){
                     return ElevatedButton(onPressed: () {
                       Provider.of<IdeasManager>(context, listen: false).removeIdea(widget.idea, context);

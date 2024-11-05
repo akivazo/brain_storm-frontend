@@ -13,7 +13,7 @@ class FeedbackCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var userName = UserManager.getInstance(context).getUser().name;
+    var userName = UserManager.getInstance(context).getUserName();
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Card(
@@ -138,9 +138,9 @@ class SubmitFeedbackBox extends StatelessWidget {
 
   void _submit(BuildContext context){
     var content = _controller.text;
-    var user = Provider.of<UserManager>(context, listen: false).getUser();
+    var userName = Provider.of<UserManager>(context, listen: false).getUserName();
     var feedbackManager = Provider.of<FeedbackManager>(context, listen: false);
-    feedbackManager.addFeedback(user, idea, content);
+    feedbackManager.addFeedback(userName, idea, content);
     _controller.clear();
 
   }

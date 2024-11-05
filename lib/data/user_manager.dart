@@ -9,12 +9,13 @@ import 'dart:convert';
 import 'dart:io';
 
 class UserManager extends ChangeNotifier {
-  User? _user;
+  String? _userName;
+  String? _password;
   final serverCommunicator = ServerCommunicator();
   late encrypt.Encrypter encrypter;
 
-  User getUser(){
-    return _user!;
+  String getUserName(){
+    return _userName!;
   }
 
 
@@ -50,7 +51,8 @@ class UserManager extends ChangeNotifier {
 
 
   void _setUser(User user){
-    this._user = user;
+    _userName = user.name;
+    _password = user.password;
     notifyListeners();
   }
 
@@ -75,7 +77,7 @@ class UserManager extends ChangeNotifier {
   }
 
   Future<bool> isUserLoggedIn() async {
-    if (_user == null){
+    if (_userName == null){
       return await _loginFromCache();
     }
     return true;
@@ -92,9 +94,9 @@ class UserManager extends ChangeNotifier {
   }
 
   void logoutUser(){
-    if (_user != null){
+    if (_userName != null){
       removeCachedUser();
-      _user == null;
+      _userName == null;
     }
 
   }
@@ -108,19 +110,18 @@ class UserManager extends ChangeNotifier {
     return serverCommunicator.isUsernameUsed(name);
   }
 
-  Set<String> getUserFavoritesIdea(){
-    return getUser().favoritesIdea;
+  Future<List<String>> getUserFavoritesIdea() {
+    var user = serverCommunicator.fetchUser(getUserName(), _password!);
+    return user.then((user) {return user!.favoritesIdea;});
   }
 
   void addFavoriteIdea(Idea idea){
-    _user!.addFavoriteIdea(idea.id);
-    serverCommunicator.addUserFavoriteIdea(getUser().name, idea.id);
+    serverCommunicator.addUserFavoriteIdea(getUserName(), idea.id);
     notifyListeners();
   }
 
   void removeFavoriteIdea(Idea idea){
-    _user!.removeFavoriteIDea(idea.id);
-    serverCommunicator.removeUserFavoriteIdea(getUser().name, idea.id);
+    serverCommunicator.removeUserFavoriteIdea(getUserName(), idea.id);
     notifyListeners();
   }
 }

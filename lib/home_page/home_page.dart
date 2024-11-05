@@ -54,7 +54,7 @@ class UserProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var userManager = Provider.of<UserManager>(context, listen: true);
-    var user = userManager.getUser();
+    var userName = userManager.getUserName();
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -64,7 +64,7 @@ class UserProfile extends StatelessWidget {
             backgroundColor: Colors.blue,
           ),
           SizedBox(height: 10),
-          Text(user.name),
+          Text(userName),
           SizedBox(height: 5),
           Text('Edit Profile', style: TextStyle(color: Colors.blue)),
           Padding(

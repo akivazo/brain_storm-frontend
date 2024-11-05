@@ -42,7 +42,7 @@ class User {
   final String name;
   final String password;
   final String email;
-  final Set<String> favoritesIdea;
+  final List<String> favoritesIdea;
 
   User({
     required this.name,
