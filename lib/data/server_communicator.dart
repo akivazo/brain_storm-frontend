@@ -11,7 +11,9 @@ class ServerCommunicator {
       subject: json['subject'],
       details: json['details'],
       timestamp: int.tryParse(json["time_created"] as String)!,
+      favorites: int.tryParse(json["favorites"] as String)!,
       tags: (json['tags'] as List<dynamic>).cast<String>(),
+
     );
   }
 
@@ -28,6 +30,7 @@ class ServerCommunicator {
       name: json['name'],
       password: json["password"],
       email: json['email'],
+      favoritesIdea: json["favorites"].map((ideaID) {ideaID as String;}).toSet()
     );
   }
 
@@ -90,12 +93,20 @@ class ServerCommunicator {
 
   }
 
-  void addFavoriteIdea(String userName, String ideaId) async {
-    await http.post(_getUri("/favorite_api/favorite/$userName/$ideaId"));
+  void addUserFavoriteIdea(String userName, String ideaId) async {
+    await http.post(_getUri("/user_api/favorite/$userName/$ideaId"));
   }
 
-  void removeFavoriteIdea(String userName, String ideaId) async {
-    await http.delete(_getUri("/favorite_api/favorite/$userName/$ideaId"));
+  void removeUserFavoriteIdea(String userName, String ideaId) async {
+    await http.delete(_getUri("/user_api/favorite/$userName/$ideaId"));
+  }
+
+  void addIdeaFavorite(String ideaId) async {
+    await http.post(_getUri("/idea_api/favorite/$ideaId"));
+  }
+
+  void removeIdeaFavorite(String ideaId) async {
+    await http.delete(_getUri("/idea_api/favorite/$ideaId"));
   }
 
   Future<User> createUser(String name, String password, String email) async {
@@ -112,7 +123,7 @@ class ServerCommunicator {
         }));
 
     if (response.statusCode == 201){
-      return User(name: name, password: password, email: email);
+      return User(name: name, password: password, email: email, favoritesIdea: {});
     }
     throw Exception("Creation went wrong: ${response.body}");
   }

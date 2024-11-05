@@ -1,5 +1,6 @@
 import 'dart:js_interop';
 
+import 'package:brain_storm/data/user_manager.dart';
 import 'package:provider/provider.dart';
 
 import 'server_communicator.dart';
@@ -9,12 +10,12 @@ import 'data_models.dart';
 
 
 class IdeasManager extends ChangeNotifier {
-  late Future<Set<Idea>> _ideas;
+  late Future<Map<String, Idea>> _ideas;
   final serverCommunicator = ServerCommunicator();
 
   IdeasManager() {
     _ideas = serverCommunicator.fetchIdeas().then((ideas) {
-      return ideas.toSet();
+      return { for (var idea in ideas) idea.id : idea };
     });
   }
 
@@ -25,7 +26,7 @@ class IdeasManager extends ChangeNotifier {
     Future<Idea> idea = serverCommunicator.createIdea(ownerName, subject, details, tags);
     _ideas = _ideas.then((ideas) {
       return idea.then((idea) {
-        ideas.add(idea);
+        ideas[idea.id] = idea;
         return ideas;
       });
     });
@@ -34,7 +35,7 @@ class IdeasManager extends ChangeNotifier {
 
   Future<Set<Idea>> getIdeas(List<String> tags) {
     return _ideas.then((ideas) {
-      return ideas.where((idea) {
+      return ideas.values.where((idea) {
         for (var desiredTag in tags) {
           if (!idea.tags.contains(desiredTag)) {
             return false;
@@ -45,6 +46,22 @@ class IdeasManager extends ChangeNotifier {
     });
   }
 
+  void addFavorite(Idea idea){
+    _ideas = _ideas.then((ideas) {
+      ideas[idea.id]!.addFavorite();
+      return ideas;
+    });
+    serverCommunicator.addIdeaFavorite(idea.id);
+  }
+
+  void removeFavorite(Idea idea){
+    _ideas = _ideas.then((ideas) {
+      ideas[idea.id]!.removeFavorite();
+      return ideas;
+    });
+    serverCommunicator.removeIdeaFavorite(idea.id);
+  }
+
   void removeIdea(Idea idea, BuildContext context) {
     var tagsManager = TagsManager.getInstance(context);
     FeedbackManager feedbackManager = FeedbackManager.getInstance(context);
@@ -52,7 +69,7 @@ class IdeasManager extends ChangeNotifier {
     feedbackManager.deleteIdeaFeedbacks(idea);
     tagsManager.removeTags(idea.tags);
     _ideas = _ideas.then((ideas) {
-      ideas.remove(idea);
+      ideas.remove(idea.id);
       return ideas;
     });
 
@@ -181,14 +198,21 @@ class TagsManager extends ChangeNotifier {
 }
 
 class FavoriteManager extends ChangeNotifier {
-  final serverCommunicator = ServerCommunicator();
 
-  void addFavorite(User user, Idea idea) {
-    serverCommunicator.addFavoriteIdea(user.name, idea.id);
+  void addFavorite(Idea idea, BuildContext context) {
+    var userManager = UserManager.getInstance(context);
+    var ideaManager = IdeasManager.getInstance(context);
+
+    userManager.addFavoriteIdea(idea);
+    ideaManager.addFavorite(idea);
   }
 
-  void removeFavorite(User user, Idea idea) {
-    serverCommunicator.removeFavoriteIdea(user.name, idea.id);
+  void removeFavorite(Idea idea, BuildContext context) {
+    var userManager = UserManager.getInstance(context);
+    var ideaManager = IdeasManager.getInstance(context);
+
+    userManager.addFavoriteIdea(idea);
+    ideaManager.addFavorite(idea);
   }
 
   static FavoriteManager getInstance(BuildContext context, {bool listen = false}) {

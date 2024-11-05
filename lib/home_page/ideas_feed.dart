@@ -25,9 +25,11 @@ class IdeasFeed extends StatelessWidget {
     // use list for order
     var futureIdeas = ideasManager.getIdeas(tags ?? []).then((ideas) {
       var _ideas = ideas.toList();
-      _ideas.sort((a, b) {return a.timestamp.compareTo(b.timestamp);});
-
-
+      if (sortingMethod == IdeasSortingMethod.TIMESTAMP){
+        _ideas.sort((a, b) {return a.timestamp.compareTo(b.timestamp);});
+      } else {
+        _ideas.sort((a, b) {return a.favorites.compareTo(b.favorites);});
+      }
       return ideas.toList();
     });
     return FutureBuilder<List<Idea>>(
@@ -143,12 +145,11 @@ class _FavoriteIconState extends State<FavoriteIcon> {
   @override
   Widget build(BuildContext context) {
     return IconButton(onPressed: (){
-      var userManager = UserManager.getInstance(context);
       var favoriteManager = FavoriteManager.getInstance(context);
       if (_liked){
-        favoriteManager.addFavorite(userManager.getUser(), widget.idea);
+        favoriteManager.addFavorite(widget.idea, context);
       } else {
-        favoriteManager.removeFavorite(userManager.getUser(), widget.idea);
+        favoriteManager.removeFavorite(widget.idea, context);
       }
       setState(() {
         _liked = !_liked;

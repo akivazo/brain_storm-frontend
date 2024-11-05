@@ -7,6 +7,7 @@ class Idea {
   final String details;
   final List<String> tags;
   final int timestamp;
+  final int favorites;
 
   Idea({
     required this.id,
@@ -14,8 +15,11 @@ class Idea {
     required this.subject,
     required this.details,
     required this.timestamp,
+    required this.favorites,
     this.tags = const [],
   });
+
+
 
 }
 
@@ -30,17 +34,21 @@ class Feedback {
     required this.content,
   });
 
+
+
 }
 
 class User {
   final String name;
   final String password;
   final String email;
+  final Set<String> favoritesIdea;
 
   User({
     required this.name,
     required this.password,
     required this.email,
+    required this.favoritesIdea
   });
 
 }

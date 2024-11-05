@@ -107,4 +107,20 @@ class UserManager extends ChangeNotifier {
   Future<bool> isUsernameUsed(String name){
     return serverCommunicator.isUsernameUsed(name);
   }
+
+  Set<String> getUserFavoritesIdea(){
+    return getUser().favoritesIdea;
+  }
+
+  void addFavoriteIdea(Idea idea){
+    _user!.addFavoriteIdea(idea.id);
+    serverCommunicator.addUserFavoriteIdea(getUser().name, idea.id);
+    notifyListeners();
+  }
+
+  void removeFavoriteIdea(Idea idea){
+    _user!.removeFavoriteIDea(idea.id);
+    serverCommunicator.removeUserFavoriteIdea(getUser().name, idea.id);
+    notifyListeners();
+  }
 }
