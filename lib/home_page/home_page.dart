@@ -93,10 +93,7 @@ class NavigationMenu extends StatelessWidget {
           leading: Icon(Icons.trending_up),
           title: Text('Trending Ideas'),
         ),
-        ListTile(
-          leading: Icon(Icons.feedback),
-          title: Text('Feedbacks'),
-        ),
+
       ],
     );
   }

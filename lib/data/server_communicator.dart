@@ -10,10 +10,9 @@ class ServerCommunicator {
       owner_name: json['owner_name'],
       subject: json['subject'],
       details: json['details'],
-      timestamp: int.tryParse(json["time_created"] as String)!,
-      favorites: int.tryParse(json["favorites"] as String)!,
+      timestamp: json["time_created"] as int,
+      favorites: json["favorites"] as int,
       tags: (json['tags'] as List<dynamic>).cast<String>(),
-
     );
   }
 
@@ -30,7 +29,7 @@ class ServerCommunicator {
       name: json['name'],
       password: json["password"],
       email: json['email'],
-      favoritesIdea: json["favorites"].map((ideaID) {ideaID as String;}).toSet()
+      favorites: (json["favorites"] as List<dynamic>?)?.cast<String>() ?? []
     );
   }
 
@@ -45,7 +44,6 @@ class ServerCommunicator {
     if (response.statusCode == 200) {
 
       final List<dynamic> ideasJson = jsonDecode(response.body)["ideas"];
-      print(ideasJson);
       return ideasJson.map((ideaJson) => _createIdea(ideaJson)).toList();
     } else  {
       throw Exception("Failed to load ideas: ${response.body}, ${response.statusCode}");
@@ -123,7 +121,7 @@ class ServerCommunicator {
         }));
 
     if (response.statusCode == 201){
-      return User(name: name, password: password, email: email, favoritesIdea: []);
+      return User(name: name, password: password, email: email, favorites: []);
     }
     throw Exception("Creation went wrong: ${response.body}");
   }

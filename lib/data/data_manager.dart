@@ -133,9 +133,10 @@ class FavoriteManager extends ChangeNotifier {
     var userManager = UserManager.getInstance(context);
     var ideaManager = IdeasManager.getInstance(context);
 
-    userManager.addFavoriteIdea(idea);
-    ideaManager.addFavorite(idea);
+    userManager.removeFavoriteIdea(idea);
+    ideaManager.removeFavorite(idea);
   }
+
 
   static FavoriteManager getInstance(BuildContext context, {bool listen = false}) {
     return Provider.of<FavoriteManager>(context, listen: listen);

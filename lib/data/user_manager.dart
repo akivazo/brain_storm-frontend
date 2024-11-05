@@ -18,7 +18,6 @@ class UserManager extends ChangeNotifier {
     return _userName!;
   }
 
-
   static UserManager getInstance(BuildContext context, {bool listen = false}){
     return Provider.of<UserManager>(context, listen: listen);
   }
@@ -112,7 +111,7 @@ class UserManager extends ChangeNotifier {
 
   Future<List<String>> getUserFavoritesIdea() {
     var user = serverCommunicator.fetchUser(getUserName(), _password!);
-    return user.then((user) {return user!.favoritesIdea;});
+    return user.then((user) {return user!.favorites;});
   }
 
   void addFavoriteIdea(Idea idea){
@@ -123,5 +122,12 @@ class UserManager extends ChangeNotifier {
   void removeFavoriteIdea(Idea idea){
     serverCommunicator.removeUserFavoriteIdea(getUserName(), idea.id);
     notifyListeners();
+  }
+
+  Future<bool> isIdeaInUserFavorites(Idea idea) async {
+    var user = serverCommunicator.fetchUser(getUserName(), _password!);
+    return user.then((user) {
+      return user!.favorites.contains(idea.id);
+    });
   }
 }

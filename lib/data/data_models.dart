@@ -42,13 +42,13 @@ class User {
   final String name;
   final String password;
   final String email;
-  final List<String> favoritesIdea;
+  final List<String> favorites;
 
   User({
     required this.name,
     required this.password,
     required this.email,
-    required this.favoritesIdea
+    required this.favorites
   });
 
 }

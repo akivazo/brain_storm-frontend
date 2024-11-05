@@ -141,22 +141,29 @@ class FavoriteIcon extends StatefulWidget {
 }
 
 class _FavoriteIconState extends State<FavoriteIcon> {
-  var _liked = false;
+  late Future<bool> _liked;
   @override
   Widget build(BuildContext context) {
-    return IconButton(onPressed: (){
-      var favoriteManager = FavoriteManager.getInstance(context);
-      if (_liked){
-        favoriteManager.addFavorite(widget.idea, context);
-      } else {
-        favoriteManager.removeFavorite(widget.idea, context);
+    var userManager = UserManager.getInstance(context);
+    _liked = userManager.isIdeaInUserFavorites(widget.idea);
+    return FutureBuilder(
+      future: _liked,
+      builder: (context, snapshot){
+        if (snapshot.hasData){
+          var liked = snapshot.data!;
+          return IconButton(onPressed: (){
+            var favoriteManager = FavoriteManager.getInstance(context);
+            print(liked);
+            if (liked){
+              favoriteManager.removeFavorite(widget.idea, context);
+            } else {
+              favoriteManager.addFavorite(widget.idea, context);
+            }
+            setState(() {});
+          }, icon: Icon(liked ?  Icons.favorite : Icons.favorite_border ));
+        }
+        return SizedBox.shrink();
       }
-      setState(() {
-        _liked = !_liked;
-      });
-
-
-
-    }, icon: Icon(_liked ?  Icons.favorite : Icons.favorite_border ));
+    );
   }
 }
