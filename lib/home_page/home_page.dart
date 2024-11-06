@@ -1,6 +1,7 @@
 
 import 'package:brain_storm/data/user_manager.dart';
-import 'package:brain_storm/home_page/filter_view.dart';
+import 'package:brain_storm/home_page/ideas_feed.dart';
+import 'package:brain_storm/home_page/tag_filter.dart';
 import 'package:brain_storm/home_page/main_feed.dart';
 import 'package:brain_storm/home_page/new_idea.dart';
 import 'package:flutter/material.dart';
@@ -19,8 +20,14 @@ class HomePage extends StatelessWidget {
             child: Column(
               children: [
                 UserProfile(),
-                NavigationMenu(),
+                Divider(indent:10, endIndent: 10, height: 40,),
                 NewIdeaButton(),
+                Divider(indent:10, endIndent: 10, height: 40,),
+                ShowAllIdeasIcon(),
+                FavoriteFilterIcon(),
+                MyIdeasIcon(),
+                Divider(indent: 10, endIndent: 10, height: 40,),
+                TagsFilter()
               ],
             ),
           ),
@@ -30,17 +37,6 @@ class HomePage extends StatelessWidget {
             child: Container(
               color: Colors.white,
               child: MainFeed(),
-            ),
-          ),
-
-          // Right Sidebar
-          Container(
-            width: 250,
-            color: Colors.grey[300],
-            child: Column(
-              children: [
-                FilterView()
-              ],
             ),
           ),
         ],
@@ -62,89 +58,79 @@ class UserProfile extends StatelessWidget {
           CircleAvatar(
             radius: 40,
             backgroundColor: Colors.blue,
+            child: Text(userName,),
           ),
-          SizedBox(height: 10),
-          Text(userName),
-          SizedBox(height: 5),
-          Text('Edit Profile', style: TextStyle(color: Colors.blue)),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(onPressed: (){
-              userManager.logoutUser();
-              Navigator.pop(context);
-            }, child: Text("Logout")),
-          )
+          SizedBox(height: 30,),
+          ElevatedButton(onPressed: (){
+            userManager.logoutUser();
+            Navigator.pop(context);
+          }, child: Text("Logout"))
         ],
       ),
     );
   }
 }
 
-class NavigationMenu extends StatelessWidget {
+class ShowAllIdeasIcon extends StatelessWidget {
+  const ShowAllIdeasIcon({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Column(
+    var mainFeedPage = MainFeedPage.getInstance(context);
+    return Row(
       children: [
-        ListTile(
-          leading: Icon(Icons.lightbulb_outline),
-          title: Text('My Ideas'),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Icon(Icons.list),
         ),
-        ListTile(
-          leading: Icon(Icons.trending_up),
-          title: Text('Trending Ideas'),
-        ),
-
+        TextButton(onPressed: (){
+          mainFeedPage.setPage(IdeasFeed());
+        }, child: Text("All ideas")),
       ],
     );
   }
 }
 
-// Main Feed Widgets
+class FavoriteFilterIcon extends StatelessWidget {
+  const FavoriteFilterIcon({super.key});
 
-// Right Sidebar Widgets
-class TrendingIdeas extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Trending Ideas', style: TextStyle(fontSize: 18)),
-          SizedBox(height: 10),
-          ListTile(
-            leading: Icon(Icons.lightbulb_outline),
-            title: Text('Idea 1'),
-          ),
-          ListTile(
-            leading: Icon(Icons.lightbulb_outline),
-            title: Text('Idea 2'),
-          ),
-          ListTile(
-            leading: Icon(Icons.lightbulb_outline),
-            title: Text('Idea 3'),
-          ),
-        ],
-      ),
+    return Row(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Icon(Icons.thumb_up_alt_outlined),
+        ),
+        TextButton(
+            onPressed: () {
+              var mainFeedPage = MainFeedPage.getInstance(context);
+              mainFeedPage.setPage(IdeasFeed(sortingMethod: IdeasSortingMethod.FAVORITES,));
+            }, child: Text("Most Liked Ideas")
+        )
+      ],
     );
   }
 }
 
-class TagsAndCategories extends StatelessWidget {
+class MyIdeasIcon extends StatelessWidget {
+  const MyIdeasIcon({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Tags & Categories', style: TextStyle(fontSize: 18)),
-          SizedBox(height: 10),
-          Chip(label: Text('Tech')),
-          Chip(label: Text('Business')),
-          Chip(label: Text('Design')),
-        ],
-      ),
+    return Row(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Icon(Icons.lightbulb_outline),
+        ),
+        TextButton(
+            onPressed: () {
+              var mainFeedPage = MainFeedPage.getInstance(context);
+              mainFeedPage.setPage(IdeasFeed(userIdeas: true));
+            }, child: Text("My Ideas"))
+      ],
     );
   }
 }
+

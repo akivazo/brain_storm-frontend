@@ -15,8 +15,9 @@ class IdeasFeed extends StatelessWidget {
 
   final List<String>? tags;
   final IdeasSortingMethod sortingMethod;
+  final bool userIdeas;
 
-  const IdeasFeed({super.key, this.tags, this.sortingMethod = IdeasSortingMethod.TIMESTAMP});
+  const IdeasFeed({super.key, this.tags, this.sortingMethod = IdeasSortingMethod.TIMESTAMP, this.userIdeas = false});
 
   @override
   Widget build(BuildContext context) {
@@ -25,12 +26,16 @@ class IdeasFeed extends StatelessWidget {
     // use list for order
     var futureIdeas = ideasManager.getIdeas(tags ?? []).then((ideas) {
       var _ideas = ideas.toList();
+      if (userIdeas){
+        var userName = UserManager.getInstance(context).getUserName();
+        _ideas = _ideas.where((idea) {return idea.owner_name == userName;}).toList();
+      }
       if (sortingMethod == IdeasSortingMethod.TIMESTAMP){
-        _ideas.sort((a, b) {return a.timestamp.compareTo(b.timestamp);});
+        _ideas.sort((a, b) {return b.timestamp.compareTo(a.timestamp);});
       } else {
         _ideas.sort((a, b) {return a.favorites.compareTo(b.favorites);});
       }
-      return ideas.toList();
+      return _ideas.toList();
     });
     return FutureBuilder<List<Idea>>(
         future: futureIdeas,
@@ -140,27 +145,51 @@ class FavoriteIcon extends StatefulWidget {
   State<FavoriteIcon> createState() => _FavoriteIconState();
 }
 
+class FavoriteData {
+  final bool isUserLiked;
+  final Idea idea;
+
+  FavoriteData({required this.isUserLiked, required this.idea});
+}
+
 class _FavoriteIconState extends State<FavoriteIcon> {
-  late Future<bool> _liked;
+
+  Future<FavoriteData> initData(BuildContext context) {
+    var userManager = UserManager.getInstance(context);
+    var liked = userManager.isIdeaInUserFavorites(widget.idea);
+    var ideaManager = IdeasManager.getInstance(context);
+    var idea = ideaManager.fetchIdea(widget.idea.id);
+    return liked.then((liked) {
+      return idea.then((idea) {
+        return FavoriteData(isUserLiked: liked, idea: idea);
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    var userManager = UserManager.getInstance(context);
-    _liked = userManager.isIdeaInUserFavorites(widget.idea);
-    return FutureBuilder(
-      future: _liked,
+
+    return FutureBuilder<FavoriteData>(
+      future: initData(context),
       builder: (context, snapshot){
         if (snapshot.hasData){
-          var liked = snapshot.data!;
-          return IconButton(onPressed: (){
-            var favoriteManager = FavoriteManager.getInstance(context);
-            print(liked);
-            if (liked){
-              favoriteManager.removeFavorite(widget.idea, context);
-            } else {
-              favoriteManager.addFavorite(widget.idea, context);
-            }
-            setState(() {});
-          }, icon: Icon(liked ?  Icons.favorite : Icons.favorite_border ));
+          var data = snapshot.data!;
+          return Column(
+            children: [
+              IconButton(onPressed: (){
+                var favoriteManager = FavoriteManager.getInstance(context);
+                if (data.isUserLiked){
+                  // user dislike
+                  favoriteManager.removeFavorite(widget.idea, context);
+                } else {
+                  // user liked
+                  favoriteManager.addFavorite(widget.idea, context);
+                }
+                setState(() {});
+              }, icon: Icon(data.isUserLiked ?  Icons.favorite : Icons.favorite_border )),
+              Text(data.idea.favorites.toString())
+            ],
+          );
         }
         return SizedBox.shrink();
       }

@@ -27,12 +27,6 @@ class TagsFilter extends StatelessWidget {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextButton(onPressed: (){
-                            mainFeedPage.setPage(IdeasFeed());
-                          }, child: Text("Show all ideas")),
-                        ),
                         Row(
                           children: [
                             SizedBox(width: 10,),
@@ -70,14 +64,6 @@ class TagsFilter extends StatelessWidget {
         return Text("Somthing went wrong");
       },
     );
-  }
-
-}
-
-class FilterView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return TagsFilter();
   }
 
 }

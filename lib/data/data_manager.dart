@@ -13,7 +13,9 @@ class IdeasManager extends ChangeNotifier {
   final serverCommunicator = ServerCommunicator();
 
 
-
+  Future<Idea> fetchIdea(String ideaId){
+    return serverCommunicator.fetchIdea(ideaId);
+  }
   void createIdea(String ownerName, String subject, String details,
       List<String> tags, BuildContext context) {
     var tagsManager = TagsManager.getInstance(context);
@@ -23,7 +25,17 @@ class IdeasManager extends ChangeNotifier {
   }
 
   Future<Set<Idea>> getIdeas(List<String> tags) {
-    return serverCommunicator.fetchIdeas().then((ideas) {return ideas.toSet();});
+    return serverCommunicator.fetchIdeas().then((ideas) {
+
+      return ideas.where((idea){
+        for (var tag in tags){
+          if (!idea.tags.contains(tag)){
+            return false;
+          }
+        }
+        return true;
+      }).toSet();
+    });
   }
 
   void addFavorite(Idea idea){

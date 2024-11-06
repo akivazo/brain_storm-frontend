@@ -37,6 +37,14 @@ class ServerCommunicator {
     return Uri.https(serverIP, queryPath);
   }
 
+  Future<Idea> fetchIdea(String ideaId) async {
+    var response = await http.get(_getUri('/idea_api/idea/$ideaId'));
+    if (response.statusCode == 404){
+      throw Exception("Idea was not found");
+
+    }
+    return _createIdea(jsonDecode(response.body)["idea"]);
+  }
   Future<List<Idea>> fetchIdeas() async {
     // return only the ideas which has at least one tag from 'tags'
     final response = await http.get(_getUri('/idea_api/ideas'));

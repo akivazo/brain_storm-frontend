@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 
 
 void main() {
-
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) =>  UserManager()),
