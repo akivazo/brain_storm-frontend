@@ -13,41 +13,52 @@ enum IdeasSortingMethod {
 }
 
 class IdeasFeed extends StatelessWidget {
-
   final List<String>? tags;
   final IdeasSortingMethod sortingMethod;
   final bool userIdeas;
 
-  const IdeasFeed({super.key, this.tags, this.sortingMethod = IdeasSortingMethod.TIMESTAMP, this.userIdeas = false});
+  const IdeasFeed(
+      {super.key,
+      this.tags,
+      this.sortingMethod = IdeasSortingMethod.TIMESTAMP,
+      this.userIdeas = false});
 
   @override
   Widget build(BuildContext context) {
-
-    final IdeasManager ideasManager = IdeasManager.getInstance(context, listen: true);
+    final IdeasManager ideasManager =
+        IdeasManager.getInstance(context, listen: true);
     // use list for order
     var ideas = ideasManager.getIdeas(tags ?? []).toList();
-    if (userIdeas){
+    if (userIdeas) {
       var userName = UserManager.getInstance(context).getUserName();
-      ideas = ideas.where((idea) {return idea.owner_name == userName;}).toList();
+      ideas = ideas.where((idea) {
+        return idea.owner_name == userName;
+      }).toList();
     }
-    if (sortingMethod == IdeasSortingMethod.TIMESTAMP){
-      ideas.sort((a, b) {return b.timestamp.compareTo(a.timestamp);});
+    if (sortingMethod == IdeasSortingMethod.TIMESTAMP) {
+      ideas.sort((a, b) {
+        return b.timestamp.compareTo(a.timestamp);
+      });
     } else {
-      ideas.sort((a, b) {return a.favorites.compareTo(b.favorites);});
+      ideas.sort((a, b) {
+        return a.favorites.compareTo(b.favorites);
+      });
     }
-    if (ideas.isEmpty){
+    if (ideas.isEmpty) {
       return Center(child: Text("No ideas to present"));
     }
     return ListView.builder(
         padding: const EdgeInsets.all(16.0),
         itemCount: ideas.length + 1, // Replace with the number of ideas
         itemBuilder: (context, index) {
-          if (index == 0){
-            if (tags != null){
-              return Text("Tags: ${tags!.join(", ")}", style: Theme.of(context).textTheme.labelMedium,);
+          if (index == 0) {
+            if (tags != null) {
+              return Text(
+                "Tags: ${tags!.join(", ")}",
+                style: Theme.of(context).textTheme.labelMedium,
+              );
             }
             return SizedBox.shrink();
-
           }
           index -= 1;
           return IdeaCard(
@@ -67,9 +78,9 @@ class IdeaCard extends StatefulWidget {
 }
 
 class _IdeaCardState extends State<IdeaCard> {
-
   @override
   Widget build(BuildContext context) {
+    String details = widget.idea.details;
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 10),
       child: Padding(
@@ -82,8 +93,26 @@ class _IdeaCardState extends State<IdeaCard> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10),
-            Text(widget.idea.details, style: Theme.of(context).textTheme.bodyLarge),
-            Divider(height: 20, endIndent: 40,),
+            Builder(builder: (context) {
+              if (details.length > 20) {
+                return Row(children: [
+                  Text(details.length > 30 ? details.substring(0, 30) : details,
+                      style: Theme.of(context).textTheme.bodyLarge),
+                  TextButton(
+                      onPressed: () {
+                        Provider.of<MainFeedPage>(context, listen: false)
+                            .goToIdeaFeed(widget.idea);
+                      },
+                      child: Text("See more.."))
+                ]);
+              }
+              return Text(details,
+                  style: Theme.of(context).textTheme.bodyLarge);
+            }),
+            Divider(
+              height: 20,
+              endIndent: 40,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -91,28 +120,39 @@ class _IdeaCardState extends State<IdeaCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text("tags: ${widget.idea.tags.join(", ")}"),
-                    SizedBox(height: 5,),
-                    Text('Posted by: ${widget.idea.owner_name}', style: Theme.of(context).textTheme.bodySmall,),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      'Posted by: ${widget.idea.owner_name}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
                   ],
                 ),
                 Spacer(),
                 ElevatedButton(
                   onPressed: () {
-                    Provider.of<MainFeedPage>(context, listen: false).goToIdeaFeed(widget.idea);
+                    Provider.of<MainFeedPage>(context, listen: false)
+                        .goToIdeaFeed(widget.idea);
                   },
                   child: Text('Feedbacks'),
                 ),
-                FavoriteIcon(idea: widget.idea,),
+                FavoriteIcon(
+                  idea: widget.idea,
+                ),
                 Builder(builder: (context) {
                   var userName = UserManager.getInstance(context).getUserName();
-                  if (widget.idea.owner_name == userName){
-                    return ElevatedButton(onPressed: () {
-                      IdeasManager.getInstance(context).removeIdea(widget.idea, context);
-                    }, child: Text("Delete Idea"),);
+                  if (widget.idea.owner_name == userName) {
+                    return ElevatedButton(
+                      onPressed: () {
+                        IdeasManager.getInstance(context)
+                            .removeIdea(widget.idea, context);
+                      },
+                      child: Text("Delete Idea"),
+                    );
                   }
                   return SizedBox.shrink();
                 })
-
               ],
             ),
           ],
@@ -126,6 +166,7 @@ class FavoriteIcon extends StatefulWidget {
   final Idea idea;
 
   const FavoriteIcon({super.key, required this.idea});
+
   @override
   State<FavoriteIcon> createState() => _FavoriteIconState();
 }
@@ -138,7 +179,6 @@ class FavoriteData {
 }
 
 class _FavoriteIconState extends State<FavoriteIcon> {
-
   @override
   Widget build(BuildContext context) {
     var userManager = UserManager.getInstance(context);
@@ -147,17 +187,19 @@ class _FavoriteIconState extends State<FavoriteIcon> {
     var idea = ideaManager.getIdea(widget.idea.id);
     return Column(
       children: [
-        IconButton(onPressed: (){
-          var favoriteManager = FavoriteManager.getInstance(context);
-          if (liked){
-            // user dislike
-            favoriteManager.removeFavorite(widget.idea, context);
-          } else {
-            // user liked
-            favoriteManager.addFavorite(widget.idea, context);
-          }
-          setState(() {});
-        }, icon: Icon(liked ?  Icons.favorite : Icons.favorite_border )),
+        IconButton(
+            onPressed: () {
+              var favoriteManager = FavoriteManager.getInstance(context);
+              if (liked) {
+                // user dislike
+                favoriteManager.removeFavorite(widget.idea, context);
+              } else {
+                // user liked
+                favoriteManager.addFavorite(widget.idea, context);
+              }
+              setState(() {});
+            },
+            icon: Icon(liked ? Icons.favorite : Icons.favorite_border)),
         Text(idea.favorites.toString())
       ],
     );
