@@ -11,6 +11,7 @@ enum IdeasSortingMethod {
   TIMESTAMP,
   FAVORITES,
 }
+
 class IdeasFeed extends StatelessWidget {
 
   final List<String>? tags;
@@ -22,52 +23,36 @@ class IdeasFeed extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final IdeasManager ideasManager = Provider.of<IdeasManager>(context, listen: true);
+    final IdeasManager ideasManager = IdeasManager.getInstance(context, listen: true);
     // use list for order
-    var futureIdeas = ideasManager.getIdeas(tags ?? []).then((ideas) {
-      var _ideas = ideas.toList();
-      if (userIdeas){
-        var userName = UserManager.getInstance(context).getUserName();
-        _ideas = _ideas.where((idea) {return idea.owner_name == userName;}).toList();
-      }
-      if (sortingMethod == IdeasSortingMethod.TIMESTAMP){
-        _ideas.sort((a, b) {return b.timestamp.compareTo(a.timestamp);});
-      } else {
-        _ideas.sort((a, b) {return a.favorites.compareTo(b.favorites);});
-      }
-      return _ideas.toList();
-    });
-    return FutureBuilder<List<Idea>>(
-        future: futureIdeas,
-        builder: (BuildContext context, AsyncSnapshot<List<Idea>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasData) {
-            var ideas = snapshot.data!;
-            if (ideas.isEmpty){
-              return Center(child: Text("No ideas to present"));
+    var ideas = ideasManager.getIdeas(tags ?? []).toList();
+    if (userIdeas){
+      var userName = UserManager.getInstance(context).getUserName();
+      ideas = ideas.where((idea) {return idea.owner_name == userName;}).toList();
+    }
+    if (sortingMethod == IdeasSortingMethod.TIMESTAMP){
+      ideas.sort((a, b) {return b.timestamp.compareTo(a.timestamp);});
+    } else {
+      ideas.sort((a, b) {return a.favorites.compareTo(b.favorites);});
+    }
+    if (ideas.isEmpty){
+      return Center(child: Text("No ideas to present"));
+    }
+    return ListView.builder(
+        padding: const EdgeInsets.all(16.0),
+        itemCount: ideas.length + 1, // Replace with the number of ideas
+        itemBuilder: (context, index) {
+          if (index == 0){
+            if (tags != null){
+              return Text("Tags: ${tags!.join(", ")}", style: Theme.of(context).textTheme.labelMedium,);
             }
-            return ListView.builder(
-                padding: const EdgeInsets.all(16.0),
-                itemCount: ideas.length + 1, // Replace with the number of ideas
-                itemBuilder: (context, index) {
-                  if (index == 0){
-                    if (tags != null){
-                      return Text("Tags: ${tags!.join(", ")}", style: Theme.of(context).textTheme.labelMedium,);
-                    }
-                    return SizedBox.shrink();
+            return SizedBox.shrink();
 
-                  }
-                  index -= 1;
-                  return IdeaCard(
-                    idea: ideas[index],
-                  );
-                });
-          } else if (snapshot.hasError) {
-            throw Text('Error building ideas: ${snapshot.error}');
           }
-          return Text("Somthing went wrong");
+          index -= 1;
+          return IdeaCard(
+            idea: ideas[index],
+          );
         });
   }
 }
@@ -119,10 +104,10 @@ class _IdeaCardState extends State<IdeaCard> {
                 ),
                 FavoriteIcon(idea: widget.idea,),
                 Builder(builder: (context) {
-                  var userName = Provider.of<UserManager>(context, listen: false).getUserName();
+                  var userName = UserManager.getInstance(context).getUserName();
                   if (widget.idea.owner_name == userName){
                     return ElevatedButton(onPressed: () {
-                      Provider.of<IdeasManager>(context, listen: false).removeIdea(widget.idea, context);
+                      IdeasManager.getInstance(context).removeIdea(widget.idea, context);
                     }, child: Text("Delete Idea"),);
                   }
                   return SizedBox.shrink();
@@ -154,45 +139,27 @@ class FavoriteData {
 
 class _FavoriteIconState extends State<FavoriteIcon> {
 
-  Future<FavoriteData> initData(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     var userManager = UserManager.getInstance(context);
     var liked = userManager.isIdeaInUserFavorites(widget.idea);
     var ideaManager = IdeasManager.getInstance(context);
-    var idea = ideaManager.fetchIdea(widget.idea.id);
-    return liked.then((liked) {
-      return idea.then((idea) {
-        return FavoriteData(isUserLiked: liked, idea: idea);
-      });
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-
-    return FutureBuilder<FavoriteData>(
-      future: initData(context),
-      builder: (context, snapshot){
-        if (snapshot.hasData){
-          var data = snapshot.data!;
-          return Column(
-            children: [
-              IconButton(onPressed: (){
-                var favoriteManager = FavoriteManager.getInstance(context);
-                if (data.isUserLiked){
-                  // user dislike
-                  favoriteManager.removeFavorite(widget.idea, context);
-                } else {
-                  // user liked
-                  favoriteManager.addFavorite(widget.idea, context);
-                }
-                setState(() {});
-              }, icon: Icon(data.isUserLiked ?  Icons.favorite : Icons.favorite_border )),
-              Text(data.idea.favorites.toString())
-            ],
-          );
-        }
-        return SizedBox.shrink();
-      }
+    var idea = ideaManager.getIdea(widget.idea.id);
+    return Column(
+      children: [
+        IconButton(onPressed: (){
+          var favoriteManager = FavoriteManager.getInstance(context);
+          if (liked){
+            // user dislike
+            favoriteManager.removeFavorite(widget.idea, context);
+          } else {
+            // user liked
+            favoriteManager.addFavorite(widget.idea, context);
+          }
+          setState(() {});
+        }, icon: Icon(liked ?  Icons.favorite : Icons.favorite_border )),
+        Text(idea.favorites.toString())
+      ],
     );
   }
 }

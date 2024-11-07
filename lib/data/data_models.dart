@@ -7,7 +7,7 @@ class Idea {
   final String details;
   final List<String> tags;
   final int timestamp;
-  final int favorites;
+  int favorites;
 
   Idea({
     required this.id,
@@ -19,6 +19,13 @@ class Idea {
     this.tags = const [],
   });
 
+  void addFavorite(){
+    favorites += 1;
+  }
+
+  void removeFavorite(){
+    favorites -= 1;
+  }
 
 
 }
@@ -42,7 +49,7 @@ class User {
   final String name;
   final String password;
   final String email;
-  final List<String> favorites;
+  final Set<String> favorites;
 
   User({
     required this.name,

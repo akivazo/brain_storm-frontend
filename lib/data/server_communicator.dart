@@ -29,7 +29,7 @@ class ServerCommunicator {
       name: json['name'],
       password: json["password"],
       email: json['email'],
-      favorites: (json["favorites"] as List<dynamic>?)?.cast<String>() ?? []
+      favorites: (json["favorites"] as List<dynamic>?)?.cast<String>().toSet() ?? {}
     );
   }
 
@@ -129,7 +129,7 @@ class ServerCommunicator {
         }));
 
     if (response.statusCode == 201){
-      return User(name: name, password: password, email: email, favorites: []);
+      return User(name: name, password: password, email: email, favorites: {});
     }
     throw Exception("Creation went wrong: ${response.body}");
   }

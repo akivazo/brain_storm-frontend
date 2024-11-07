@@ -54,17 +54,8 @@ class FeedbacksView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var feedbacksManager = Provider.of<FeedbackManager>(context, listen: true);
-    var futureFeedbacks = feedbacksManager.getIdeaFeedbacks(idea);
-    return FutureBuilder<List<Feedback>>(
-        future: futureFeedbacks,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasData) {
-            List<Feedback> feedbacks = snapshot.data!;
-            print(feedbacks);
-            return Expanded(
+    var feedbacks = feedbacksManager.getIdeaFeedbacks(idea);
+    return Expanded(
               child: ListView.builder(
                   padding: const EdgeInsets.all(16.0),
                   itemCount: feedbacks.length,
@@ -77,13 +68,8 @@ class FeedbacksView extends StatelessWidget {
                   }),
             );
           }
-          if (snapshot.hasError) {
-            return Text("Error: ${snapshot.error}");
-          }
-          return Text("Somthing went wrong");
-        });
   }
-}
+
 
 class ExpendedIdea extends StatelessWidget {
   final Idea idea;

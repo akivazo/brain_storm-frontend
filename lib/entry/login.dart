@@ -1,3 +1,6 @@
+import 'package:brain_storm/data/data_models.dart';
+import 'package:brain_storm/data/server_communicator.dart';
+import 'package:brain_storm/data/user_cache.dart';
 import 'package:brain_storm/data/user_manager.dart';
 import 'package:brain_storm/home_page/home_page.dart';
 import 'package:flutter/material.dart';
@@ -15,28 +18,46 @@ class _LoginPageState extends State<LoginPage> {
   final _nameController = TextEditingController();
   final _passwordController = TextEditingController();
   var generalErrorText = "";
+  final _serverCommunicator = ServerCommunicator();
+  final userCache = UserCache();
+
+  Future<bool> isUsernameUsed(String name){
+    return _serverCommunicator.isUsernameUsed(name);
+  }
+
+  Future<User?> _getUser(String name, String password) async {
+    User? user = await _serverCommunicator.fetchUser(name, password);
+    if (user == null){
+      return null;
+    }
+
+    userCache.cacheUser(UserCacheData(userName: user.name, password: user.password));
+    return user;
+  }
 
   void _login(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
-      var userManager = Provider.of<UserManager>(context, listen: false);
-      var created = false;
+
+      User? user;
       try {
-         created = await userManager.loginUser(_nameController.text, _passwordController.text);
+         user = await _getUser(_nameController.text, _passwordController.text);
       } on Exception catch (e, stacktrace){
         setState(() {
           generalErrorText = "${e}. ${stacktrace}.";
         });
         return;
       }
-      if (!created){
+      if (user == null){
         setState(() {
           generalErrorText = "Either Username or the passwords were incorrect";
 
         });
         return;
       }
+      UserManager.getInstance(context).setUser(user);
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => HomePage()));
+
     }
   }
   @override

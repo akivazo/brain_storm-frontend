@@ -80,25 +80,25 @@ class _TagsFieldState extends State<TagsField> {
     super.dispose();
   }
 
-  Future<List<String>> getTagsSuggestion(String text) async {
+  List<String> getTagsSuggestion(String text) {
     var tagsManager = TagsManager.getInstance(context);
-    return tagsManager.getTags().then((tags) {
-      var _tags = tags.entries.toList();
-      _tags.sort((a, b) {
+
+      var tags = tagsManager.getTags().entries.toList();
+      tags.sort((a, b) {
         return b.value - a.value;
       });
 
 
-      return _tags.map((entry) {return entry.key;})
+      return tags.map((entry) {return entry.key;})
           .where((tag) => tag.toLowerCase().contains(text.toLowerCase()))
           .toList();
-    });
+
   }
 
-  void _onTextChanged() async {
+  void _onTextChanged() {
     final text = _controller.text;
     if (text.isNotEmpty) {
-      filteredSuggestions = await getTagsSuggestion(text);
+      filteredSuggestions = getTagsSuggestion(text);
       _showOverlay();
     } else {
       _hideOverlay();
@@ -211,7 +211,7 @@ class _NewIdeaFormState extends State<NewIdeaForm> {
   final _detailsController = TextEditingController();
   final _chosenTags = Set<String>();
 
-  void _create(){
+  void _create(BuildContext context){
     var ideaManager = IdeasManager.getInstance(context);
     var userManager = UserManager.getInstance(context);
     if (_formKey.currentState!.validate()) {
@@ -261,7 +261,7 @@ class _NewIdeaFormState extends State<NewIdeaForm> {
                   Center(
                     child: ElevatedButton(
                       onPressed: () {
-                        _create();
+                        _create(context);
                       },
                       child: Text('Create'),
                     ),

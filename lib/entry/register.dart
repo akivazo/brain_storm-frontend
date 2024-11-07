@@ -1,5 +1,7 @@
 import 'package:brain_storm/data/data_manager.dart';
 import 'package:brain_storm/data/data_models.dart';
+import 'package:brain_storm/data/server_communicator.dart';
+import 'package:brain_storm/data/user_cache.dart';
 import 'package:brain_storm/data/user_manager.dart';
 import 'package:brain_storm/entry/tags_picker.dart';
 import 'package:brain_storm/home_page/home_page.dart';
@@ -18,12 +20,24 @@ class _RegisterPageState extends State<RegisterPage> {
   final _passwordController = TextEditingController();
   final _validatePasswordController = TextEditingController();
   var generalErrorText = "";
+  final _serverCommunicator = ServerCommunicator();
+  final userCache = UserCache();
+
+  Future<bool> _isUsernameUsed(String name){
+    return _serverCommunicator.isUsernameUsed(name);
+  }
+
+  Future<User> _createUser(String name, String password, String email) async {
+    var user = await _serverCommunicator.createUser(name, password, email);
+    userCache.cacheUser(UserCacheData(userName: user.name, password: user.password));
+    return user;
+
+  }
 
   void _register(BuildContext context) async {
-    var userManager = Provider.of<UserManager>(context, listen: false);
     if (_formKey.currentState!.validate()) {
       var name = _nameController.text;
-      if (await userManager.isUsernameUsed(name)){
+      if (await _isUsernameUsed(name)){
         setState(() {
           generalErrorText = "Username '${name}' already exist";
         });
@@ -31,15 +45,16 @@ class _RegisterPageState extends State<RegisterPage> {
         var password = _passwordController.text;
         var email = _emailController.text;
 
+        var user;
         try {
-          userManager.registerUser(name, password, email);
+          user = await _createUser(name, password, email);
         } catch (e, stacktrace) {
           setState(() {
             generalErrorText = "Error: ${e} $stacktrace";
           });
           return;
         }
-
+        UserManager.getInstance(context).setUser(user);
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (context) => HomePage()));
       }
