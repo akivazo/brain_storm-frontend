@@ -1,7 +1,7 @@
 import 'package:brain_storm/data/data_manager.dart';
 import 'package:brain_storm/data/data_models.dart';
 import 'package:brain_storm/data/user_manager.dart';
-import 'package:brain_storm/home_page/main_feed.dart';
+import 'package:brain_storm/home_page/main_feed/main_feed.dart';
 import 'package:flutter/material.dart' hide Feedback;
 import 'package:provider/provider.dart';
 
@@ -55,6 +55,16 @@ class FeedbacksView extends StatelessWidget {
   Widget build(BuildContext context) {
     var feedbacksManager = Provider.of<FeedbackManager>(context, listen: true);
     var feedbacks = feedbacksManager.getIdeaFeedbacks(idea);
+    if (feedbacks.isEmpty){
+      return Expanded(
+        child: Column(
+          children: [
+            Divider(height: 40,),
+            Text("No Feedbacks yet", style: TextStyle(),),
+          ],
+        ),
+      );
+    }
     return Expanded(
               child: ListView.builder(
                   padding: const EdgeInsets.all(16.0),

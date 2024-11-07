@@ -4,7 +4,7 @@ import 'package:brain_storm/data/server_communicator.dart';
 import 'package:brain_storm/data/user_cache.dart';
 import 'package:brain_storm/data/user_manager.dart';
 import 'package:brain_storm/entry/app_entry.dart';
-import 'package:brain_storm/home_page/main_feed.dart';
+import 'package:brain_storm/home_page/main_feed/main_feed.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 

@@ -1,6 +1,6 @@
 import 'package:brain_storm/data/data_manager.dart';
-import 'package:brain_storm/home_page/ideas_feed.dart';
-import 'package:brain_storm/home_page/main_feed.dart';
+import 'package:brain_storm/home_page/main_feed/ideas_feed.dart';
+import 'package:brain_storm/home_page/main_feed/main_feed.dart';
 import 'package:flutter/material.dart';
 
 class TagsFilter extends StatelessWidget {
@@ -43,7 +43,7 @@ class TagsFilter extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(name),
-                    Text("uses count: ${count}")
+                    Text("uses count: ${count}", style: TextStyle(color: Colors.grey))
                   ],
                 ),
               ),

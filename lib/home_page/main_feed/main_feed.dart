@@ -1,7 +1,7 @@
 
 import 'package:brain_storm/data/data_models.dart';
-import 'package:brain_storm/home_page/expended_idea.dart';
-import 'package:brain_storm/home_page/ideas_feed.dart';
+import 'package:brain_storm/home_page/main_feed/expended_idea.dart';
+import 'package:brain_storm/home_page/main_feed/ideas_feed.dart';
 import 'package:flutter/material.dart' hide Feedback;
 import 'package:provider/provider.dart';
 

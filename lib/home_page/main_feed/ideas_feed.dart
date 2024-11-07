@@ -1,8 +1,8 @@
 import 'package:brain_storm/data/data_manager.dart';
 import 'package:brain_storm/data/data_models.dart';
 import 'package:brain_storm/data/user_manager.dart';
-import 'package:brain_storm/home_page/expended_idea.dart';
-import 'package:brain_storm/home_page/main_feed.dart';
+import 'package:brain_storm/home_page/main_feed/expended_idea.dart';
+import 'package:brain_storm/home_page/main_feed/main_feed.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:flutter/material.dart' hide Feedback;
 import 'package:provider/provider.dart';
@@ -94,7 +94,7 @@ class _IdeaCardState extends State<IdeaCard> {
             ),
             SizedBox(height: 10),
             Builder(builder: (context) {
-              if (details.length > 20) {
+              if (details.length > 30) {
                 return Row(children: [
                   Text(details.length > 30 ? details.substring(0, 30) : details,
                       style: Theme.of(context).textTheme.bodyLarge),
