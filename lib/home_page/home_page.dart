@@ -6,8 +6,95 @@ import 'package:brain_storm/home_page/main_feed/main_feed.dart';
 import 'package:brain_storm/home_page/left_panel/new_idea.dart';
 import 'package:flutter/material.dart';
 
+bool isMobile(BuildContext context) {
+  return MediaQuery.of(context).size.width < 600;
+}
+
 
 class HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    if (isMobile(context)){
+      return MobileHomePage();
+    }
+    return DesktopHomePage();
+  }
+
+}
+
+class MobileDrawer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 250,
+      color: Colors.grey[200],
+      child: Column(
+        children: [
+          UserProfile(),
+          Divider(
+            indent: 10,
+            endIndent: 10,
+            height: 40,
+          ),
+          NewIdeaButton(),
+          Divider(
+            indent: 10,
+            endIndent: 10,
+            height: 40,
+          ),
+          ShowAllIdeasIcon(),
+          Divider(
+            indent: 10,
+            endIndent: 10,
+            height: 40,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Align(child: Text("Sort By:"), alignment: Alignment.topLeft,),
+          ),
+          FavoriteSortingIcon(),
+          NewestSortingIcon(),
+          OldestSortingIcon(),
+          Divider(
+            indent: 10,
+            endIndent: 10,
+            height: 40,
+          ),
+        ],
+      ),
+    );
+  }
+
+}
+
+class MobileHomePage extends StatelessWidget {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      drawer: MobileDrawer(),
+      key: _scaffoldKey,
+      body: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Builder(
+            builder: (context) {
+              if (_scaffoldKey.currentState!.isDrawerOpen){
+                return SizedBox.shrink();
+              }
+              return IconButton(onPressed: () {
+                _scaffoldKey.currentState!.openDrawer();
+              }, icon: Icon(Icons.arrow_forward_ios));
+            }
+          ),
+          MainFeed(),
+        ],
+      ),
+    );
+  }
+
+}
+class DesktopHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
