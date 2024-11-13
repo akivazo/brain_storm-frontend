@@ -76,25 +76,28 @@ class EntryPointView extends StatelessWidget {
 
 class EntryPoint extends StatelessWidget {
   final User? user;
+
   const EntryPoint({super.key, this.user});
 
   @override
   Widget build(BuildContext context) {
-
     if (user == null) {
       return EntryPointView();
     }
     // user is logged in
+
+    // go to home page instead of EntryPointView
     UserManager.getInstance(context).setUser(user!);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Navigator.pushReplacement(
         context,
+        MaterialPageRoute(builder: (context) => EntryPointView()),
+      );
+      Navigator.push(
+        context,
         MaterialPageRoute(builder: (context) => HomePage()),
       );
     });
-    return Center(
-      child: SizedBox.shrink(),
-    );
-
+    return SizedBox.shrink();
   }
 }

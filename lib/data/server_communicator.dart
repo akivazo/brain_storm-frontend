@@ -166,7 +166,7 @@ class ServerCommunicator {
 
   }
 
-  Future<String> addFeedback(String ideaId, String username, String content) async{
+  Future<String> addFeedback(String ideaId, String username, String content) async {
     var response = await http.post(_getUri("/feedback_api/feedback"),
         headers: {
           "Content-Type": "application/json", // Specify that you're sending JSON data
