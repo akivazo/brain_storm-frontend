@@ -17,6 +17,7 @@ class ServerCommunicator {
   }
 
   Feedback _createFeedback(Map<String, dynamic> json) {
+    print(json);
     return Feedback(
       id: json['id'],
       ownerName: json['owner_name'],
@@ -65,7 +66,7 @@ class ServerCommunicator {
     if (response.statusCode == 302) {
       final List<dynamic> feedbacksJson = jsonDecode(response.body)["feedbacks"];
       return feedbacksJson.map((feedbackJson) => _createFeedback(feedbackJson)).toList();
-    } else if (response.statusCode == 404) {
+    } else if (response.statusCode == 404 || response.statusCode == 204) {
       return [];
     } else{
       throw Exception("Failed to load feedbacks: ${response.body}, ${response.statusCode}");

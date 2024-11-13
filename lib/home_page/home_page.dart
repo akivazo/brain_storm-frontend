@@ -1,6 +1,6 @@
 
 import 'package:brain_storm/home_page/left_panel/filters.dart';
-import 'package:brain_storm/home_page/left_panel/tag_filter.dart';
+import 'package:brain_storm/home_page/tag_filter.dart';
 import 'package:brain_storm/home_page/left_panel/user_profile.dart';
 import 'package:brain_storm/home_page/main_feed/main_feed.dart';
 import 'package:brain_storm/home_page/left_panel/new_idea.dart';
@@ -32,14 +32,18 @@ class HomePage extends StatelessWidget {
                   height: 40,
                 ),
                 ShowAllIdeasIcon(),
-                FavoriteFilterIcon(),
-                MyIdeasIcon(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Align(child: Text("Sort By:"), alignment: Alignment.topLeft,),
+                ),
+                FavoriteSortingIcon(),
+                NewestSortingIcon(),
+                OldestSortingIcon(),
                 Divider(
                   indent: 10,
                   endIndent: 10,
                   height: 40,
                 ),
-                TagsFilter()
               ],
             ),
           ),
@@ -51,6 +55,22 @@ class HomePage extends StatelessWidget {
               child: MainFeed(),
             ),
           ),
+          Container(
+            width: 250,
+            color: Colors.grey[300],
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("Filter By:"),
+                ),
+                MyIdeasIcon(),
+                SizedBox(height: 10,),
+                TagsFilter(),
+              ],
+            ),
+          )
         ],
       ),
     );

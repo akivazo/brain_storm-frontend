@@ -5,27 +5,45 @@ import 'package:brain_storm/home_page/main_feed/ideas_feed.dart';
 import 'package:flutter/material.dart' hide Feedback;
 import 'package:provider/provider.dart';
 
-class MainFeedPage extends ChangeNotifier {
-  Widget _ideasFeed = IdeasFeed();
-  Widget? feedPage;
+enum IdeasSortingMethod {
+  TIMESTAMP,
+  TIMESTAMP_REVERSE,
+  FAVORITES,
+}
 
-  MainFeedPage(){
-    feedPage = _ideasFeed;
+class MainFeedPage extends ChangeNotifier {
+  List<String> tags;
+  bool userIdeas = false;
+  IdeasSortingMethod sortingMethod;
+  Widget page = IdeasFeed();
+
+  MainFeedPage({this.tags = const [], this.sortingMethod = IdeasSortingMethod.TIMESTAMP});
+
+  void toggleUserIdea(){
+    userIdeas = !userIdeas;
+    notifyListeners();
   }
 
-  Widget getPage(){
-    return feedPage!;
+  void setSortingMethod(IdeasSortingMethod sortingMethod){
+    this.sortingMethod = sortingMethod;
+    notifyListeners();
+  }
+
+  void setTags(List<String> tags){
+    this.tags = tags;
+    notifyListeners();
   }
   void goToIdeaFeed(Idea idea){
     setPage(ExpendedIdea(idea: idea));
+    notifyListeners();
   }
 
   void goToIdeasFeed(){
-    setPage(_ideasFeed);
+    setPage(IdeasFeed());
   }
 
   void setPage(Widget page){
-    feedPage = page;
+    this.page = page;
     notifyListeners();
   }
 
@@ -38,7 +56,7 @@ class MainFeed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Provider.of<MainFeedPage>(context, listen: true).getPage();
+    return Provider.of<MainFeedPage>(context, listen: true).page;
   }
 }
 

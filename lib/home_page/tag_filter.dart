@@ -25,7 +25,7 @@ class TagsFilter extends StatelessWidget {
                       SizedBox(width: 10,),
                       Icon(Icons.tag),
                       SizedBox(width: 10,),
-                      Text("Tags", style: Theme.of(context).textTheme.headlineSmall,),
+                      Text("Tags",),
                     ],
                   )
                 ],
@@ -38,7 +38,7 @@ class TagsFilter extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: ElevatedButton(
                 onPressed: () {
-                  mainFeedPage.setPage(IdeasFeed(tags: [name]));
+                  mainFeedPage.setTags([name]);
                 },
                 child: Column(
                   children: [

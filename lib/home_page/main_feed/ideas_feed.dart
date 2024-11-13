@@ -6,42 +6,36 @@ import 'package:brain_storm/home_page/main_feed/main_feed.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:flutter/material.dart' hide Feedback;
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
-enum IdeasSortingMethod {
-  TIMESTAMP,
-  FAVORITES,
-}
 
 class IdeasFeed extends StatelessWidget {
-  final List<String>? tags;
-  final IdeasSortingMethod sortingMethod;
-  final bool userIdeas;
-
-  const IdeasFeed(
-      {super.key,
-      this.tags,
-      this.sortingMethod = IdeasSortingMethod.TIMESTAMP,
-      this.userIdeas = false});
 
   @override
   Widget build(BuildContext context) {
     final IdeasManager ideasManager =
         IdeasManager.getInstance(context, listen: true);
+    final mainFeedPage = MainFeedPage.getInstance(context, listen: true);
+    var tags = mainFeedPage.tags;
     // use list for order
-    var ideas = ideasManager.getIdeas(tags ?? []).toList();
-    if (userIdeas) {
+    var ideas = ideasManager.getIdeas(tags).toList();
+    if (mainFeedPage.userIdeas) {
       var userName = UserManager.getInstance(context).getUserName();
       ideas = ideas.where((idea) {
         return idea.owner_name == userName;
       }).toList();
     }
-    if (sortingMethod == IdeasSortingMethod.TIMESTAMP) {
+    if (mainFeedPage.sortingMethod == IdeasSortingMethod.TIMESTAMP) {
+      ideas.sort((a, b) {
+        return a.timestamp.compareTo(b.timestamp);
+      });
+    } else if (mainFeedPage.sortingMethod == IdeasSortingMethod.TIMESTAMP_REVERSE) {
       ideas.sort((a, b) {
         return b.timestamp.compareTo(a.timestamp);
       });
-    } else {
+    } else if (mainFeedPage.sortingMethod == IdeasSortingMethod.FAVORITES) {
       ideas.sort((a, b) {
-        return a.favorites.compareTo(b.favorites);
+        return b.favorites.compareTo(a.favorites);
       });
     }
     if (ideas.isEmpty) {
@@ -52,9 +46,9 @@ class IdeasFeed extends StatelessWidget {
         itemCount: ideas.length + 1, // Replace with the number of ideas
         itemBuilder: (context, index) {
           if (index == 0) {
-            if (tags != null) {
+            if (tags.isNotEmpty) {
               return Text(
-                "Tags: ${tags!.join(", ")}",
+                "Tags: ${tags.join(", ")}",
                 style: Theme.of(context).textTheme.labelMedium,
               );
             }
@@ -81,6 +75,10 @@ class _IdeaCardState extends State<IdeaCard> {
   @override
   Widget build(BuildContext context) {
     String details = widget.idea.details;
+    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(widget.idea.timestamp * 1000, isUtc: true);
+    DateTime localDateTime = dateTime.toLocal();
+    String formattedDate = DateFormat.yMMMd().add_jm().format(localDateTime);
+
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 10),
       child: Padding(
@@ -127,15 +125,30 @@ class _IdeaCardState extends State<IdeaCard> {
                       'Posted by: ${widget.idea.owner_name}',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text("Created: $formattedDate", style: Theme.of(context).textTheme.bodySmall)
                   ],
                 ),
                 Spacer(),
-                ElevatedButton(
-                  onPressed: () {
-                    Provider.of<MainFeedPage>(context, listen: false)
-                        .goToIdeaFeed(widget.idea);
-                  },
-                  child: Text('Feedbacks'),
+                Column(
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Provider.of<MainFeedPage>(context, listen: false)
+                            .goToIdeaFeed(widget.idea);
+                      },
+                      child: Builder(
+                        builder: (context) {
+                          var feedbacksManager = FeedbackManager.getInstance(context);
+                          var feedbacksCount = feedbacksManager.getIdeaFeedbacks(widget.idea).length;
+                          return Text("$feedbacksCount Feedbacks ");
+                        }
+                      ),
+                    ),
+
+                  ],
                 ),
                 FavoriteIcon(
                   idea: widget.idea,
