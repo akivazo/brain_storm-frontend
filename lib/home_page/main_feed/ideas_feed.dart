@@ -117,7 +117,11 @@ class _IdeaCardState extends State<IdeaCard> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("tags: ${widget.idea.tags.join(", ")}"),
+                    Row(
+                      children: [
+                        Text("tags: ${widget.idea.tags.join(", ")}"),
+                      ],
+                    ),
                     SizedBox(
                       height: 5,
                     ),
