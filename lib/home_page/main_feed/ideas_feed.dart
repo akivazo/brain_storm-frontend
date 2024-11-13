@@ -98,8 +98,7 @@ class _IdeaCardState extends State<IdeaCard> {
                       style: Theme.of(context).textTheme.bodyLarge),
                   TextButton(
                       onPressed: () {
-                        Provider.of<MainFeedPage>(context, listen: false)
-                            .goToIdeaFeed(widget.idea);
+                        MainFeedPage.getInstance(context, listen: false).showIdeaPage(widget.idea);
                       },
                       child: Text("See more.."))
                 ]);
@@ -141,7 +140,7 @@ class _IdeaCardState extends State<IdeaCard> {
                     ElevatedButton(
                       onPressed: () {
                         Provider.of<MainFeedPage>(context, listen: false)
-                            .goToIdeaFeed(widget.idea);
+                            .showIdeaPage(widget.idea);
                       },
                       child: Builder(
                         builder: (context) {

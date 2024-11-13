@@ -24,7 +24,7 @@ class ShowAllIdeasIcon extends StatelessWidget {
         ),
         TextButton(
             onPressed: () {
-              mainFeedPage.setPage(IdeasFeed());
+              mainFeedPage.showAllIdeas();
             },
             child: Text("All ideas")),
       ],

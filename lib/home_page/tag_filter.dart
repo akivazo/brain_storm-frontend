@@ -38,7 +38,7 @@ class TagsFilter extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: ElevatedButton(
                 onPressed: () {
-                  mainFeedPage.setTags([name]);
+                  mainFeedPage.setTagToFilter(name);
                 },
                 child: Column(
                   children: [

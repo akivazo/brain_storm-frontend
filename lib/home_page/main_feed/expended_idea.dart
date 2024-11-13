@@ -94,7 +94,7 @@ class ExpendedIdea extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           IconButton(onPressed: () {
-            Provider.of<MainFeedPage>(context, listen: false).goToIdeasFeed();
+            Provider.of<MainFeedPage>(context, listen: false).restartIdeaFeed();
           }, icon: Icon(Icons.arrow_back)),
           SizedBox(height: 20,),
           Text(

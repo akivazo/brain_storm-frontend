@@ -12,12 +12,14 @@ enum IdeasSortingMethod {
 }
 
 class MainFeedPage extends ChangeNotifier {
-  List<String> tags;
-  bool userIdeas = false;
-  IdeasSortingMethod sortingMethod;
-  Widget page = IdeasFeed();
+  late List<String> tags;
+  late bool userIdeas;
+  late IdeasSortingMethod sortingMethod;
+  late Widget page;
 
-  MainFeedPage({this.tags = const [], this.sortingMethod = IdeasSortingMethod.TIMESTAMP});
+  MainFeedPage(){
+    restartIdeaFeed();
+  }
 
   void toggleUserIdea(){
     userIdeas = !userIdeas;
@@ -29,23 +31,28 @@ class MainFeedPage extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setTags(List<String> tags){
-    this.tags = tags;
-    notifyListeners();
-  }
-  void goToIdeaFeed(Idea idea){
-    setPage(ExpendedIdea(idea: idea));
+  void showAllIdeas(){
+    restartIdeaFeed();
     notifyListeners();
   }
 
-  void goToIdeasFeed(){
-    setPage(IdeasFeed());
-  }
-
-  void setPage(Widget page){
-    this.page = page;
+  void showIdeaPage(Idea idea){
+    page = ExpendedIdea(idea: idea);
     notifyListeners();
   }
+  void setTagToFilter(String tag){
+    tags = [tag];
+    notifyListeners();
+  }
+
+  void restartIdeaFeed(){
+    userIdeas = false;
+    tags = [];
+    sortingMethod = IdeasSortingMethod.TIMESTAMP;
+    page = IdeasFeed();
+  }
+
+
 
   static MainFeedPage getInstance(BuildContext context, {bool listen = false}){
     return Provider.of<MainFeedPage>(context, listen: listen);
@@ -56,6 +63,7 @@ class MainFeed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("yay");
     return Provider.of<MainFeedPage>(context, listen: true).page;
   }
 }
