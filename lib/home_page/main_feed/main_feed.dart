@@ -50,6 +50,7 @@ class MainFeedPage extends ChangeNotifier {
     tags = [];
     sortingMethod = IdeasSortingMethod.TIMESTAMP;
     page = IdeasFeed();
+    notifyListeners();
   }
 
 

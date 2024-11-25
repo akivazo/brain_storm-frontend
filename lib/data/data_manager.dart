@@ -79,10 +79,10 @@ class FeedbackManager extends ChangeNotifier {
 
   List<Feedback> getIdeaFeedbacks(Idea idea)  {
 
-    return feedbacks[idea.id]!;
+    return feedbacks[idea.id] ?? [];
   }
 
-  void addFeedback(String userName, Idea idea, String content)async{
+  void addFeedback(String userName, Idea idea, String content) async {
     var id = await serverCommunicator.addFeedback(idea.id, userName, content);
 
     feedbacks[idea.id]!.add(Feedback(id: id, ownerName: userName, content: content));
