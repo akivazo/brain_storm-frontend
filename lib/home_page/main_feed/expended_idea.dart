@@ -22,7 +22,7 @@ class FeedbackCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(feedback.content, style: Theme.of(context).textTheme.bodyLarge,),
+              SelectableText(feedback.content, style: Theme.of(context).textTheme.bodyLarge,),
               Row(
                 children: [
                   Text("Posted by ${feedback.ownerName}", style: Theme.of(context).textTheme.bodySmall),
@@ -97,7 +97,7 @@ class ExpendedIdea extends StatelessWidget {
             Provider.of<MainFeedPage>(context, listen: false).restartIdeaFeed();
           }, icon: Icon(Icons.arrow_back)),
           SizedBox(height: 20,),
-          Text(
+          SelectableText(
             idea.subject,
             style: Theme.of(context).textTheme.headlineMedium,
           ),
@@ -107,7 +107,7 @@ class ExpendedIdea extends StatelessWidget {
             style: TextStyle(fontSize: 14, color: Colors.grey[700]),
           ),
           SizedBox(height: 16.0),
-          Text(
+          SelectableText(
             idea.details,
             style: TextStyle(fontSize: 16),
           ),

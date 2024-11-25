@@ -16,7 +16,7 @@ class IdeaMainDetailsView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        SelectableText(
           idea.subject,
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
@@ -24,7 +24,7 @@ class IdeaMainDetailsView extends StatelessWidget {
         Builder(builder: (context) {
           if (details.length > 30) {
             return Row(children: [
-              Text(details.length > 30 ? details.substring(0, 30) : details,
+              SelectableText(details.length > 30 ? details.substring(0, 30) : details,
                   style: Theme.of(context).textTheme.bodyLarge),
               TextButton(
                   onPressed: () {
@@ -33,7 +33,7 @@ class IdeaMainDetailsView extends StatelessWidget {
                   child: Text("See more.."))
             ]);
           }
-          return Text(details,
+          return SelectableText(details,
               style: Theme.of(context).textTheme.bodyLarge);
         }),
       ],
